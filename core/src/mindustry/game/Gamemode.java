@@ -38,7 +38,9 @@ public enum Gamemode{
         rules.editor = true;
         rules.waves = false;
         rules.waveTimer = false;
-    });
+    }),
+    // Append: preserve the ordinals of all existing modes.
+    industrial(IndustrialMode::apply);
 
     private final Cons<Rules> rules;
     private final Boolf<Map> validator;

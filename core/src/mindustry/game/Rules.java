@@ -25,6 +25,8 @@ public class Rules{
     public boolean allowEditRules = false;
     /** Sandbox mode: Enables infinite resources, build range and build speed. */
     public boolean infiniteResources;
+    /** Peaceful custom game. Absent in older saves, so existing modes remain unchanged. */
+    public boolean industrial = false;
     /** Allow building and deconstructing cores anywhere, as well as showing ui to change teams */
     public boolean coreBuildAndConfig = false;
     /** Team-specific rules. */
@@ -270,10 +272,12 @@ public class Rules{
         if(Seq.with(source.bannedBlocks).contains(Content::isPatchContent)) bannedBlocks = source.bannedBlocks;
         if(Seq.with(source.bannedUnits).contains(Content::isPatchContent)) bannedUnits = source.bannedUnits;
         if(source.loadout.contains(i -> i.item.isPatchContent())) loadout = source.loadout;
+        if(industrial) IndustrialMode.apply(this);
     }
 
     /** Returns the gamemode that best fits these rules. */
     public Gamemode mode(){
+        if(industrial) return Gamemode.industrial;
         if(pvp){
             return Gamemode.pvp;
         }else if(editor){

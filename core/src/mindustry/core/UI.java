@@ -280,6 +280,7 @@ public class UI implements ApplicationListener, Loadable{
     }
 
     public TextureRegionDrawable getIcon(String name){
+        if(name.equals("modeIndustrial") || name.equals("modeIndustrialSmall")) return Icon.hammer;
         if(Icon.icons.containsKey(name)) return Icon.icons.get(name);
         return Core.atlas.getDrawable("error");
     }

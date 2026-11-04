@@ -1,6 +1,6 @@
 # Compiler et installer depuis un smartphone Android
 
-Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. Elle prépare uniquement la compilation Android dans GitHub Actions : gameplay original et systèmes de combat conservés. Elle n’est pas une version officielle de Mindustry.
+Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 3 ajoute un mode **Industriel** aux parties personnalisées ; les autres modes et la campagne restent disponibles. Elle n’est pas une version officielle de Mindustry.
 
 ## Lancer une compilation sans ordinateur
 
@@ -16,7 +16,7 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-test.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m3.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial (test)** et vérifier le menu, puis une partie classique avec construction, convoyeurs et combat. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
@@ -54,4 +54,14 @@ La branche par défaut `master` contient un lanceur manuel qui appelle le workfl
 
 Le fork reste sous **GNU GPL v3**, avec conservation du fichier `LICENSE` et de l’historique amont. Le ZIP d’artefact contient le texte de licence et une archive des sources du commit du fork correspondant à l’APK. Il contient aussi les sources Arc de la révision utilisée et sa licence Apache 2.0. Le workflow et cette procédure font partie des sources ; `BUILD-INFO.txt` référence aussi la révision Arc utilisée. Conserver et respecter les licences propres aux dépendances et assets. Avant diffusion durable au-delà des essais, compléter l’inventaire des notices et la fourniture des sources des dépendances embarquées selon leurs licences.
 
-Les modifications de cette mission concernent uniquement la CI, la compilation et l’identité de l’application de test. Aucun mode industriel n’est encore développé.
+## Jouer en mode Industriel (Mission 3)
+
+1. Depuis le menu principal, ouvrir **Partie personnalisée**, puis choisir une carte existante disposant d’un noyau joueur et de minerais.
+2. Dans les modes, toucher **Industriel**, puis **Jouer**. Le panneau défile verticalement si nécessaire en paysage.
+3. Le statut **Industriel — sans attaques** apparaît dans le HUD. Construire les foreuses, convoyeurs, machines, conduites, générateurs et stockage comme dans le jeu d’origine.
+
+Les coûts de construction, intrants et besoins électriques restent actifs. Les stocks de départ sont ceux de la carte et restent limités. Les gisements utilisent encore le fonctionnement infini d’origine : leur épuisement et la progression technologique seront ajoutés ultérieurement.
+
+Le mode désactive les vagues, les conditions militaires de victoire/défaite et les objectifs de carte ; il retire les bâtiments/unités ennemis de la copie chargée du monde. Les processeurs de monde sont désactivés pour empêcher les scripts de carte de réintroduire des attaques ; les processeurs logiques ordinaires restent disponibles. Le fichier de carte original n’est pas modifié. Le bouton de règles personnalisées est désactivé pour ce mode afin de conserver ces garanties.
+
+Sauvegarder et reprendre normalement : le mode est enregistré avec la partie. Les anciennes sauvegardes restent dans leur mode d’origine ; elles ne sont pas converties automatiquement. Le multijoueur avec une version officielle ou un ancien APK du fork n’est pas garanti : utiliser la même version du fork sur les participants. Les mods modifiant les règles ou le moteur ne font pas partie de la validation de cette première version.

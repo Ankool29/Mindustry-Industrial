@@ -1079,6 +1079,10 @@ public class HudFragment{
 
             builder.setLength(0);
 
+            if(state.rules.industrial){
+                return builder.append(Core.bundle.get("mode.industrial.status"));
+            }
+
             //mission overrides everything
             if(state.rules.mission != null && state.rules.mission.length() > 0){
                 builder.append(state.rules.mission);

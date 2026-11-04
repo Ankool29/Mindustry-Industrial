@@ -101,6 +101,8 @@ public class Logic implements ApplicationListener{
 
         Events.on(WorldLoadEvent.class, e -> {
 
+            IndustrialMode.prepareWorld();
+
             if(state.isCampaign()){
                 //enable building AI on campaign unless the preset disables it
                 state.rules.coreIncinerates = true;
@@ -267,6 +269,7 @@ public class Logic implements ApplicationListener{
 
     /** Adds starting items, resets wave time, and sets state to playing. */
     public void play(){
+        IndustrialMode.prepareWorld();
         state.set(State.playing);
         //grace period of 2x wave time before game starts
         state.wavetime = (state.rules.initialWaveSpacing <= 0 ? state.rules.waveSpacing * 2 : state.rules.initialWaveSpacing) * (state.isCampaign() ? state.getPlanet().campaignRules.difficulty.waveTimeMultiplier : 1f);
@@ -317,6 +320,7 @@ public class Logic implements ApplicationListener{
     }
 
     public void runWave(){
+        if(state.rules.industrial) return;
         spawner.spawnEnemies();
         state.wave++;
         state.wavetime = state.rules.waveSpacing * (state.isCampaign() ? state.getPlanet().campaignRules.difficulty.waveTimeMultiplier : 1f);
@@ -517,6 +521,7 @@ public class Logic implements ApplicationListener{
         boolean runStateCheck = !net.client() && !world.isInvalidMap() && !state.isEditor() && state.rules.canGameOver;
 
         if(state.isGame()){
+            IndustrialMode.removeHostileUnits();
             if(!net.client()){
                 state.enemies = Groups.unit.count(u -> u.team() == state.rules.waveTeam && u.isEnemy());
             }

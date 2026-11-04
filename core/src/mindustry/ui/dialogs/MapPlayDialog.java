@@ -40,6 +40,7 @@ public class MapPlayDialog extends BaseDialog{
         this.lastMap = map;
         title.setText(map.name());
         cont.clearChildren();
+        Table body = new Table();
 
         //reset to any valid mode after switching to attack (one must exist)
         if(!selectedGamemode.valid(map)){
@@ -63,23 +64,31 @@ public class MapPlayDialog extends BaseDialog{
                 modes.button(mode.toString(), Styles.flatToggleMenut, () -> {
                     selectedGamemode = mode;
                     rules = map.applyRules(mode);
-                }).update(b -> b.setChecked(selectedGamemode == mode)).size(140f, mobile ? 44f : 54f).disabled(!mode.valid(map));
+                }).update(b -> b.setChecked(selectedGamemode == mode))
+                    .size(140f, mobile && mode != Gamemode.industrial ? 44f : 54f)
+                    .name("mode-" + mode.name()).disabled(!mode.valid(map));
                 if(i++ % 2 == 1) modes.row();
             }
         });
 
         selmode.button("?", this::displayGameModeHelp).width(50f).fillY().padLeft(18f);
 
-        cont.add(selmode);
-        cont.row();
-        cont.button("@customize", Icon.settings, () -> dialog.show(rules, () -> rules = map.applyRules(selectedGamemode))).height(50f).width(230);
-        cont.row();
-        cont.add(new BorderImage(map.safeTexture(), 3f)).size(mobile && !Core.graphics.isPortrait() ? 150f : 250f).get().setScaling(Scaling.fit);
+        body.add(selmode);
+        body.row();
+        body.button("@customize", Icon.settings, () -> dialog.show(rules, () -> rules = map.applyRules(selectedGamemode)))
+            .disabled(b -> selectedGamemode == Gamemode.industrial).height(50f).width(230);
+        body.row();
+        body.add(new BorderImage(map.safeTexture(), 3f)).size(mobile && !Core.graphics.isPortrait() ? 150f : 250f).get().setScaling(Scaling.fit);
         //only maps with survival are valid for high scores
         if(Gamemode.survival.valid(map)){
-            cont.row();
-            cont.label((() -> Core.bundle.format("level.highscore", map.getHighScore()))).pad(3f);
+            body.row();
+            body.label((() -> Core.bundle.format("level.highscore", map.getHighScore()))).pad(3f);
         }
+
+        ScrollPane pane = new ScrollPane(body);
+        pane.setScrollingDisabled(true, false);
+        pane.setFadeScrollBars(false);
+        cont.add(pane).grow();
 
         buttons.clearChildren();
         addCloseButton();
@@ -89,7 +98,7 @@ public class MapPlayDialog extends BaseDialog{
             control.playMap(map, rules, playtesting);
             hide();
             ui.custom.hide();
-        }).size(210f, 64f);
+        }).size(210f, 64f).name("play-custom-map");
 
         show();
     }

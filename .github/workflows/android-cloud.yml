@@ -78,17 +78,20 @@ jobs:
             sdkmanager --list_installed
           } | tee build-evidence/versions.txt
 
-      - name: Build signed debug APK
+      - name: Test gameplay and build signed debug APK
         run: |
           chmod +x gradlew
           set -o pipefail
           ./gradlew --version 2>&1 | tee build-evidence/gradle-version.txt
+          ./gradlew tests:test --no-daemon --max-workers=2 --stacktrace \
+            -Pbuildversion=160.7 -PversionType=industrial-m3 \
+            2>&1 | tee build-evidence/tests.log
           # Prepare atlases before Android merges assets on a clean runner.
           ./gradlew tools:pack --no-daemon --max-workers=2 --stacktrace \
-            -Pbuildversion=160.7 -PversionType=industrial-test \
+            -Pbuildversion=160.7 -PversionType=industrial-m3 \
             2>&1 | tee build-evidence/sprite-pack.log
           ./gradlew android:assembleDebug --no-daemon --max-workers=2 --stacktrace \
-            -Pbuildversion=160.7 -PversionType=industrial-test \
+            -Pbuildversion=160.7 -PversionType=industrial-m3 \
             2>&1 | tee build-evidence/build.log
 
       - name: Verify APK and prepare download
@@ -96,8 +99,8 @@ jobs:
           mapfile -t apks < <(find android/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -type f)
           test "${#apks[@]}" -eq 1
           mkdir -p dist
-          cp "${apks[0]}" dist/Mindustry-Industrial-v160.7-test.apk
-          apk=dist/Mindustry-Industrial-v160.7-test.apk
+          cp "${apks[0]}" dist/Mindustry-Industrial-v160.7-m3.apk
+          apk=dist/Mindustry-Industrial-v160.7-m3.apk
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$apk" \
             | tee build-evidence/apk-signature.txt
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 -v 4 "$apk" \
@@ -108,7 +111,7 @@ jobs:
           unzip -Z1 "$apk" > build-evidence/apk-contents.txt
           grep -E '^lib/arm64-v8a/.*\.so$' build-evidence/apk-contents.txt
           grep -E '^assets/sprites/sprites\.aatls$' build-evidence/apk-contents.txt
-          (cd dist && sha256sum Mindustry-Industrial-v160.7-test.apk > SHA256SUMS.txt)
+          (cd dist && sha256sum Mindustry-Industrial-v160.7-m3.apk > SHA256SUMS.txt)
           cp LICENSE dist/LICENSE
           git archive --format=tar.gz --output=dist/mindustry-corresponding-source.tar.gz HEAD
           git -C ../Arc archive --format=tar.gz --output="$PWD/dist/arc-corresponding-source.tar.gz" HEAD
@@ -118,7 +121,7 @@ jobs:
             echo "Source: https://github.com/$GITHUB_REPOSITORY/tree/$(git rev-parse HEAD)"
             echo "Run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo "Arc: https://github.com/Anuken/Arc/tree/7445105cd2683daf5b9ac7033ebb07265d3e814d"
-            echo 'Test debug APK. Original gameplay. Not an official Mindustry build.'
+            echo 'Mission 3: Industrial custom mode; original modes retained. Unofficial debug test APK.'
           } > dist/BUILD-INFO.txt
           {
             echo '## APK Android prêt'
@@ -142,5 +145,16 @@ jobs:
         with:
           name: Android-build-evidence
           path: Mindustry/build-evidence/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload gameplay test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gameplay-test-reports
+          path: |
+            Mindustry/tests/build/reports/tests/test/
+            Mindustry/tests/build/test-results/test/
           if-no-files-found: warn
           retention-days: 30
