@@ -2,6 +2,8 @@
 
 La branche de travail basée sur **v160.7** est [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android). Le gameplay original est conservé.
 
+**Compilation GitHub Actions validée : [télécharger l’APK et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41878845453/artifacts/13349165446).** [Résultats et installation sur Samsung](MISSION_2_VALIDATION.md).
+
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
 
 [Guide de téléchargement et d’installation sur Android](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
