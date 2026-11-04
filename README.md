@@ -1,14 +1,14 @@
-## Mindustry Industrial — mode Industriel Android (Mission 3)
+## Mindustry Industrial — campagne planétaire Android (Mission 4)
 
-La branche de travail basée sur **v160.7** est [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android). Le mode **Industriel** permet de construire une usine sans ennemis, vagues ni objectifs militaires, avec les coûts et machines d’origine. Les autres modes sont conservés.
+La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, ajoute **Serpulo industrielle** : plusieurs secteurs à développer sans ennemis, vagues ni conquête militaire, avec ressources et coûts normaux. Les campagnes classiques et le mode Industriel sur carte personnalisée sont conservés.
 
-**[Télécharger l’APK M3 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41888638797/artifacts/13353056101)** — [rapport de validation, captures et installation](MISSION_3_VALIDATION.md). Accès : **Partie personnalisée → carte → Industriel → Jouer**. M3 s’installe à côté de Mission 2 pour préserver ses sauvegardes ; ne pas désinstaller l’ancienne application.
+**[Télécharger l’APK M4 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41896356479/artifacts/13357580159)** — [rapport, captures et validation](MISSION_4_VALIDATION.md). **348 tests réussis** et compilation Android réelle. Installer par-dessus M3, **sans désinstallation**, puis **Jouer → Campagne → Serpulo industrielle → secteur 170**. Produire les ressources du déploiement pour ouvrir les secteurs voisins.
 
-Historique : [Mission 2 — compilation Android sans modification de gameplay](MISSION_2_VALIDATION.md).
+Historique : [Mission 3 — mode Industriel sur carte isolée](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
 
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
 
-[Guide de téléchargement et d’installation sur Android](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
+[Guide Android : installation, campagne et limites](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
 
 ---
 
