@@ -96,6 +96,8 @@ jobs:
           apk=dist/Mindustry-Industrial-v160.7-test.apk
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$apk" \
             | tee build-evidence/apk-signature.txt
+          "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 -v 4 "$apk" \
+            > build-evidence/apk-alignment.txt
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" \
             | tee build-evidence/apk-badging.txt
           grep -E "package: name='io.anuke.mindustry.industrial'" build-evidence/apk-badging.txt

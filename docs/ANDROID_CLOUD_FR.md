@@ -41,11 +41,13 @@ Si Android refuse une mise à jour pour signature incompatible, exporter les sau
 - JDK : **Temurin 17**.
 - Android : plateforme **36**, Build Tools **36.0.0**, SDK minimal déclaré **21**.
 - Arc : commit `7445105cd2683daf5b9ac7033ebb07265d3e814d`, correspondant au `archash` amont.
-- Gradle et Android Gradle Plugin : versions déclarées dans `gradle/wrapper/gradle-wrapper.properties` et `android/build.gradle` ; les valeurs réellement utilisées sont archivées par le workflow. L’amont v160.7 déclare Gradle 9.3.1 et AGP 8.2.2 ; cette combinaison doit être éprouvée par une première exécution avant correction ciblée.
+- Gradle : **8.14.3**, distribution vérifiée par SHA-256. Android Gradle Plugin : **8.10.1**, compatible avec la plateforme Android 36. Les valeurs réellement utilisées sont archivées par le workflow. L’amont v160.7 déclare Gradle 9.3.1 et AGP 8.2.2 ; un essai réel dans le cloud a atteint R8 puis échoué sur un fichier intermédiaire `base.jar` manquant. Les deux versions d’outillage sont ajustées ; le code du jeu reste inchangé.
 - Le build utilise les sources Arc à la révision verrouillée plutôt que sa branche `master`. Les autres dépendances restent celles de Mindustry. L’accès à Google Maven, Maven Central et JitPack reste nécessaire.
 - `CI=false` évite la configuration de la clé de publication privée de l’amont. Le job construit une APK debug, pas une release officielle.
 
 Les workflows de publication et maintenance propres au dépôt officiel sont remplacés sur cette branche par le seul workflow Android. Aucun secret ni droit d’écriture sur les dépôts amont n’est requis.
+
+La branche par défaut `master` contient un lanceur manuel qui appelle le workflow de `industrial-android`. Le bouton **Run workflow** fonctionne ainsi sans réglage administratif du dépôt ; un lancement manuel compile toujours la branche de travail v160.7. Les constructions déclenchées par un push compilent le commit exact de ce push.
 
 ## Licence et sources
 
