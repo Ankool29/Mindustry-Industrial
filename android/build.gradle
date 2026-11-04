@@ -82,6 +82,11 @@ android{
     flavorDimensions = ["google"]
 
     signingConfigs{
+        debug{
+            if(System.getenv("MINDUSTRY_DEBUG_KEYSTORE") != null){
+                storeFile file(System.getenv("MINDUSTRY_DEBUG_KEYSTORE"))
+            }
+        }
         release{
             if(project.hasProperty("RELEASE_STORE_FILE")){
                 storeFile file(RELEASE_STORE_FILE)
@@ -102,7 +107,7 @@ android{
     buildTypes{
         debug{
             // Keep cloud test builds separate from the official Android app.
-            applicationIdSuffix ".industrial"
+            applicationIdSuffix ".industrial.m3"
         }
         all{
             //TODO without these lines (r8 enabled), Mindustry crashes with missing default interface method errors.

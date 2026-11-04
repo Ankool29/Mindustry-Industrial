@@ -25,6 +25,7 @@ jobs:
       # Upstream uses CI=true to configure its private release keystore.
       # This job produces a debug APK and must not request that key.
       CI: 'false'
+      MINDUSTRY_DEBUG_KEYSTORE: ${{ runner.temp }}/mindustry-industrial-m3.keystore
     steps:
       - name: Checkout Mindustry
         uses: actions/checkout@v4
@@ -62,8 +63,18 @@ jobs:
       - name: Restore test signing key
         uses: actions/cache@v4
         with:
-          path: ~/.android/debug.keystore
-          key: mindustry-industrial-debug-key-v1
+          path: ${{ env.MINDUSTRY_DEBUG_KEYSTORE }}
+          key: mindustry-industrial-m3-signing-v2
+
+      - name: Initialize persistent M3 test signing key
+        run: |
+          if [ ! -f "$MINDUSTRY_DEBUG_KEYSTORE" ]; then
+            keytool -genkeypair -noprompt -storetype JKS \
+              -keystore "$MINDUSTRY_DEBUG_KEYSTORE" -storepass android \
+              -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 \
+              -validity 10000 -dname 'CN=Android Debug,O=Android,C=US'
+          fi
+          keytool -list -keystore "$MINDUSTRY_DEBUG_KEYSTORE" -storepass android -alias androiddebugkey
 
       - name: Record build inputs
         run: |
@@ -107,7 +118,7 @@ jobs:
             > build-evidence/apk-alignment.txt
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" \
             | tee build-evidence/apk-badging.txt
-          grep -E "package: name='io.anuke.mindustry.industrial'" build-evidence/apk-badging.txt
+          grep -E "package: name='io.anuke.mindustry.industrial.m3'" build-evidence/apk-badging.txt
           unzip -Z1 "$apk" > build-evidence/apk-contents.txt
           grep -E '^lib/arm64-v8a/.*\.so$' build-evidence/apk-contents.txt
           grep -E '^assets/sprites/sprites\.aatls$' build-evidence/apk-contents.txt

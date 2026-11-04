@@ -19,13 +19,15 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 2. Ouvrir `Mindustry-Industrial-v160.7-m3.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
-5. Lancer **Mindustry Industrial (test)** et vérifier le menu, puis une partie classique avec construction, convoyeurs et combat. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
+5. Lancer **Mindustry Industrial M3**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
-L’identifiant d’application de test est distinct de celui de Mindustry officiel : les deux applications peuvent coexister. Ne pas désinstaller l’original. Les sauvegardes de l’original ne sont pas migrées automatiquement ; utiliser ses fonctions d’export/import si nécessaire.
+M3 utilise l’identifiant `io.anuke.mindustry.industrial.m3`. Elle coexiste avec Mindustry officiel et l’APK de Mission 2 (`io.anuke.mindustry.industrial`). **Ne désinstaller aucune de ces applications pour installer M3.** Cette séparation protège leurs sauvegardes : la clé de test de Mission 2 n’avait pas été conservée par l’ancien cache et ne permet pas une mise à jour signée compatible.
+
+Pour transférer vos parties, exporter les données depuis les paramètres de l’ancienne application, puis importer cette archive depuis les paramètres de M3. Les anciennes parties conservent leur mode d’origine ; l’import ne les transforme pas en parties industrielles.
 
 ## Signature et mises à jour de test
 
-L’APK est signé avec la clé Android de **debug**, ce qui permet son installation. Ce n’est pas une clé de publication. Le workflow conserve cette clé dans le cache GitHub pour faciliter les mises à jour de test. Le cache peut expirer ou être supprimé ; la signature peut alors changer. Son empreinte est enregistrée dans `apk-signature.txt`.
+L’APK est signé avec une clé Android de **debug**, ce qui permet son installation. Ce n’est pas une clé de publication. Le workflow M3 utilise un chemin de clé explicite, partagé avec Gradle et le cache GitHub, pour faciliter les mises à jour de test. Le cache peut expirer ou être supprimé ; la signature peut alors changer. Son empreinte est enregistrée dans `apk-signature.txt`. Une clé durable dans GitHub Secrets sera nécessaire avant une distribution de production.
 
 Si Android refuse une mise à jour pour signature incompatible, exporter les sauvegardes depuis l’application de test avant de désinstaller **uniquement cette application de test**, puis installer le nouvel APK. Une clé stable stockée dans GitHub Secrets sera nécessaire avant toute distribution durable. Ne pas désactiver Play Protect globalement ni forcer l’installation si le fichier ou sa provenance sont douteux.
 
