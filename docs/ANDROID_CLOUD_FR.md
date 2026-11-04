@@ -44,6 +44,7 @@ Si Android refuse une mise à jour pour signature incompatible, exporter les sau
 - Gradle : **8.14.3**, distribution vérifiée par SHA-256. Android Gradle Plugin : **8.10.1**, compatible avec la plateforme Android 36. Les valeurs réellement utilisées sont archivées par le workflow. L’amont v160.7 déclare Gradle 9.3.1 et AGP 8.2.2 ; un essai réel dans le cloud a atteint R8 puis échoué sur un fichier intermédiaire `base.jar` manquant. Les deux versions d’outillage sont ajustées ; le code du jeu reste inchangé.
 - Le build utilise les sources Arc à la révision verrouillée plutôt que sa branche `master`. Les autres dépendances restent celles de Mindustry. L’accès à Google Maven, Maven Central et JitPack reste nécessaire.
 - `CI=false` évite la configuration de la clé de publication privée de l’amont. Le job construit une APK debug, pas une release officielle.
+- `tools:pack` est exécuté avant l’assemblage Android : les atlas doivent exister avant que le plugin Android ne collecte les assets d’un checkout neuf.
 
 Les workflows de publication et maintenance propres au dépôt officiel sont remplacés sur cette branche par le seul workflow Android. Aucun secret ni droit d’écriture sur les dépôts amont n’est requis.
 

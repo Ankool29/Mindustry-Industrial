@@ -83,6 +83,10 @@ jobs:
           chmod +x gradlew
           set -o pipefail
           ./gradlew --version 2>&1 | tee build-evidence/gradle-version.txt
+          # Prepare atlases before Android merges assets on a clean runner.
+          ./gradlew tools:pack --no-daemon --max-workers=2 --stacktrace \
+            -Pbuildversion=160.7 -PversionType=industrial-test \
+            2>&1 | tee build-evidence/sprite-pack.log
           ./gradlew android:assembleDebug --no-daemon --max-workers=2 --stacktrace \
             -Pbuildversion=160.7 -PversionType=industrial-test \
             2>&1 | tee build-evidence/build.log
