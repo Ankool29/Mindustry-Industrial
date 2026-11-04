@@ -1,8 +1,10 @@
-## Mindustry Industrial — compilation Android dans le cloud
+## Mindustry Industrial — mode Industriel Android (Mission 3)
 
-La branche de travail basée sur **v160.7** est [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android). Le gameplay original est conservé.
+La branche de travail basée sur **v160.7** est [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android). Le mode **Industriel** permet de construire une usine sans ennemis, vagues ni objectifs militaires, avec les coûts et machines d’origine. Les autres modes sont conservés.
 
-**Compilation GitHub Actions validée : [télécharger l’APK et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41878845453/artifacts/13349165446).** [Résultats et installation sur Samsung](MISSION_2_VALIDATION.md).
+**[Télécharger l’APK M3 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41888638797/artifacts/13353056101)** — [rapport de validation, captures et installation](MISSION_3_VALIDATION.md). Accès : **Partie personnalisée → carte → Industriel → Jouer**. M3 s’installe à côté de Mission 2 pour préserver ses sauvegardes ; ne pas désinstaller l’ancienne application.
+
+Historique : [Mission 2 — compilation Android sans modification de gameplay](MISSION_2_VALIDATION.md).
 
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
 
