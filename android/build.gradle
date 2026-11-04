@@ -100,6 +100,10 @@ android{
     }
 
     buildTypes{
+        debug{
+            // Keep cloud test builds separate from the official Android app.
+            applicationIdSuffix ".industrial"
+        }
         all{
             //TODO without these lines (r8 enabled), Mindustry crashes with missing default interface method errors.
             //WHY THE HELL ARE DEFAULT INTERFACES NOT BEING DESUGARED? WHY DID UPDATING AGP MAKE THIS HAPPEN?
