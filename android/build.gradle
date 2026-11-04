@@ -56,7 +56,7 @@ android{
 
     defaultConfig{
         Properties props = loadVersionProps()
-        Integer vcode = props['androidBuildCode']?.toInteger() ?: 1
+        Integer vcode = project.hasProperty("androidVersionCode") ? project.property("androidVersionCode").toInteger() : (props['androidBuildCode']?.toInteger() ?: 1)
         def versionNameResult = "$versionNumber-$versionType-${getBuildVersion().replace(" ", "-")}"
 
         applicationId "io.anuke.mindustry"

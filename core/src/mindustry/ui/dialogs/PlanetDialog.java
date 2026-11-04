@@ -180,8 +180,9 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
 
         //show selection of Erekir/Serpulo campaign if the user has no bases, and hasn't selected yet (essentially a "have they played campaign before" check)
         shown(() -> {
-            if(!settings.getBool("campaignselect") && !content.planets().contains(p -> p.sectors.contains(Sector::hasBase))){
+            if(!IndustrialCampaign.isPlanet(state.planet) && !settings.getBool("campaignselect") && !content.planets().contains(p -> p.sectors.contains(Sector::hasBase))){
                 var diag = new BaseDialog("@campaign.select");
+                Table choicesTable = new Table();
 
                 Planet[] selected = {null};
                 var group = new ButtonGroup<>();
@@ -192,7 +193,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                 for(var planet : choices){
                     TextureRegion tex = new TextureRegion(planetTextures[i]);
 
-                    diag.cont.button(b -> {
+                    choicesTable.button(b -> {
                         b.top();
                         b.add(planet.localizedName).color(Pal.accent).style(Styles.outlineLabel);
                         b.row();
@@ -201,8 +202,13 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                     i ++;
                 }
 
-                diag.cont.row();
-                diag.cont.label(() -> selected[0] == null ? "@campaign.none" : "@campaign." + selected[0].name).labelAlign(Align.center).style(Styles.outlineLabel).width(440f).wrap().colspan(2);
+                choicesTable.row();
+                choicesTable.button("@campaign.industrial", Icon.hammer, Styles.togglet, () -> selected[0] = Planets.industrialSerpulo)
+                    .group(group).size(440f, 60f).colspan(2).name("industrial-campaign-choice").row();
+                choicesTable.label(() -> selected[0] == null ? "@campaign.none" : "@campaign." + selected[0].name).labelAlign(Align.center).style(Styles.outlineLabel).width(440f).wrap().colspan(2);
+                ScrollPane choicesPane = new ScrollPane(choicesTable);
+                choicesPane.setScrollingDisabled(true, false);
+                diag.cont.add(choicesPane).grow();
 
                 diag.buttons.button("@ok", Icon.ok, () -> {
                     state.planet = selected[0];
@@ -236,13 +242,23 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
     /** show with no limitations, just as a map. */
     @Override
     public Dialog show(){
+        return show((Planet)null);
+    }
+
+    public Dialog showIndustrial(){
+        return show(Planets.industrialSerpulo);
+    }
+
+    public Dialog show(Planet preferred){
         if(net.client()){
             ui.showInfo("@map.multiplayer");
             return this;
         }
 
         //view current planet by default
-        if(Vars.state.rules.sector != null){
+        if(preferred != null){
+            state.planet = preferred;
+        }else if(Vars.state.rules.sector != null){
             state.planet = Vars.state.rules.sector.planet;
             settings.put("lastplanet", state.planet.name);
         }
@@ -313,7 +329,8 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
     }
 
     void addTech(){
-        buttons.button("@techtree", Icon.tree, () -> ui.research.show()).size(200f, 54f).visible(() -> mode == look).pad(2).bottom();
+        buttons.button("@techtree", Icon.tree, () -> ui.research.show()).size(200f, 54f).visible(() -> mode == look)
+            .update(b -> b.setText(Core.bundle.get(IndustrialCampaign.isPlanet(state.planet) ? "industrial.catalog" : "techtree"))).pad(2).bottom();
     }
 
     public void showOverview(){
@@ -413,6 +430,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
 
     boolean canSelect(Sector sector){
         if(mode == select) return sector.hasBase() && launchSector != null && sector.planet == launchSector.planet;
+        if(mode == look && IndustrialCampaign.isPlanet(sector.planet)) return IndustrialCampaign.canExplore(sector);
 
         //sectors with addStartingItems = true can't be landed on, as they override the core and items of the interplanetary accelerator
         //at the moment, this is only true of Ground Zero in vanilla
@@ -435,6 +453,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
     }
 
     @Nullable Sector findLauncher(Sector to){
+        if(mode == look && IndustrialCampaign.isPlanet(to.planet)) return IndustrialCampaign.findLauncher(to, launchSector);
         if(mode == planetLaunch || to.planet.generator == null) return launchSector;
 
         Sector actualLaunchSector = (launchSector != null && launchSector.planet == to.planet ? launchSector : null);
@@ -1295,7 +1314,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                     r.row();
                 }
             }).row();
-        }else if(!sector.hasBase()){
+        }else if(!sector.hasBase() && !IndustrialCampaign.isPlanet(sector.planet)){
             stable.add(Core.bundle.get("sectors.threat") + " [accent]" + sector.displayThreat()).row();
         }
 
@@ -1344,7 +1363,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                 locked ? "@locked" :
                 noCandidate ? "@sectors.nolaunchcandidate" :
                 "@sectors.launch",
-                locked ? Icon.lock : Icon.play, this::playSelected).growX().height(54f).minWidth(170f).padTop(4).disabled(locked || noCandidate);
+                locked ? Icon.lock : Icon.play, this::playSelected).name("play-sector").growX().height(54f).minWidth(170f).padTop(4).disabled(locked || noCandidate);
         }
 
         stable.pack();

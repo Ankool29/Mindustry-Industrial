@@ -294,6 +294,7 @@ public class World{
         if(state.rules.defaultTeam.core() != null){
             sector.info.spawnPosition = state.rules.defaultTeam.core().pos();
         }
+        IndustrialMode.prepareWorld();
     }
 
     private void setSectorRules(Sector sector, boolean saveInfo){

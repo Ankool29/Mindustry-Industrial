@@ -12,6 +12,7 @@ import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.game.EventType.*;
+import mindustry.game.IndustrialCampaign;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.mod.*;
@@ -130,6 +131,7 @@ public abstract class UnlockableContent extends MappableContent{
     }
 
     public boolean isOnPlanet(@Nullable Planet planet){
+        if(IndustrialCampaign.isPlanet(planet)) return isOnPlanet(Planets.serpulo);
         return planet == null || planet == Planets.sun || shownPlanets.isEmpty() || shownPlanets.contains(planet);
     }
 
@@ -249,6 +251,7 @@ public abstract class UnlockableContent extends MappableContent{
 
     /** Makes this piece of content unlocked; if it already unlocked, nothing happens. */
     public void unlock(){
+        if(IndustrialCampaign.active()) return;
         if(!unlocked && !alwaysUnlocked){
             unlocked = true;
             Core.settings.put(name + "-unlocked", true);
@@ -260,6 +263,8 @@ public abstract class UnlockableContent extends MappableContent{
 
     /** Unlocks this content, but does not fire any events. */
     public void quietUnlock(){
+        // A transition to a classic preset unlocks it before the old world is reset.
+        if(IndustrialCampaign.active() && !(this instanceof SectorPreset)) return;
         if(!unlocked()){
             unlocked = true;
             Core.settings.put(name + "-unlocked", true);
@@ -267,7 +272,7 @@ public abstract class UnlockableContent extends MappableContent{
     }
 
     public boolean unlockedNowHost(){
-        return !state.isCampaign() || unlockedHost();
+        return IndustrialCampaign.active() || !state.isCampaign() || unlockedHost();
     }
 
     /** @return in multiplayer, whether this is unlocked for the host player, otherwise, whether it is unlocked for the local player (same as unlocked()) */
@@ -279,7 +284,7 @@ public abstract class UnlockableContent extends MappableContent{
 
     /** @return whether this content is unlocked, or the player is in a custom (non-campaign) game. */
     public boolean unlockedNow(){
-        return unlocked() || !state.isCampaign();
+        return IndustrialCampaign.active() || unlocked() || !state.isCampaign();
     }
 
     public boolean unlocked(){

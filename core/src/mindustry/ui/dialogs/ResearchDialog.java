@@ -19,6 +19,7 @@ import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
+import mindustry.game.IndustrialCampaign;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -34,6 +35,15 @@ import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class ResearchDialog extends BaseDialog{
+    @Override
+    public Dialog show(){
+        if(IndustrialCampaign.active() || (ui.planet.isShown() && IndustrialCampaign.isPlanet(ui.planet.state.planet))){
+            ui.showInfo("@industrial.research.info");
+            return this;
+        }
+        return super.show();
+    }
+
     public static boolean debugShowRequirements = false;
 
     public final float nodeSize = Scl.scl(60f);

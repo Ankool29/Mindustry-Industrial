@@ -79,6 +79,7 @@ public class Logic implements ApplicationListener{
                     info.write();
 
                     state.getSector().planet.applyRules(state.rules);
+                    IndustrialMode.prepareWorld();
 
                     info.hasCore = true;
 
@@ -277,7 +278,7 @@ public class Logic implements ApplicationListener{
         Events.fire(new PlayEvent());
 
         //add starting items
-        if(!state.isCampaign() || !state.rules.sector.planet.allowLaunchLoadout || (state.rules.sector.preset != null && state.rules.sector.preset.addStartingItems)){
+        if(!state.isCampaign() || !state.rules.sector.planet.allowLaunchLoadout || IndustrialCampaign.supplyStarter() || (state.rules.sector.preset != null && state.rules.sector.preset.addStartingItems)){
             for(TeamData team : state.teams.getActive()){
                 if(team.hasCore()){
                     CoreBuild entity = team.core();

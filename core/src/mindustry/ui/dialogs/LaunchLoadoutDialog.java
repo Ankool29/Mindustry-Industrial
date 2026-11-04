@@ -135,7 +135,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
                 ItemSeq realItems = sitems.copy();
                 selected.requirements().each(realItems::remove);
 
-                loadout.show(lastCapacity, realItems, out, i -> i.unlocked() && i.isOnPlanet(sector.planet), out::clear, () -> {}, () -> {
+                loadout.show(lastCapacity, realItems, out, i -> (IndustrialCampaign.isPlanet(sector.planet) || i.unlocked()) && i.isOnPlanet(sector.planet), out::clear, () -> {}, () -> {
                     universe.updateLaunchResources(new ItemSeq(out));
                     update.run();
                     rebuildItems.run();
@@ -151,7 +151,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
             universe.updateLoadout(core, selected);
             confirm.run();
             hide();
-        }).disabled(b -> !valid);
+        }).name("launch-sector-confirm").disabled(b -> !valid);
 
         if(rows){
             cell.colspan(2).size(160f + 160f + 4f, 64f);

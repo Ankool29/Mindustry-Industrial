@@ -7,7 +7,7 @@ import mindustry.gen.*;
 import static mindustry.Vars.*;
 
 /**
- * Policy for peaceful custom games. Keep future industrial progression and deposit
+ * Policy for peaceful custom games and the isolated industrial campaign. Keep future industrial progression and deposit
  * policies here, separate from the shared machines and the campaign generators.
  */
 public final class IndustrialMode{
@@ -53,7 +53,7 @@ public final class IndustrialMode{
 
     /** Clean the loaded world, never the map file or an unrelated saved game. */
     public static void prepareWorld(){
-        if(!state.rules.industrial || state.isCampaign() || net.client()) return;
+        if(!state.rules.industrial || (state.isCampaign() && !IndustrialCampaign.active()) || net.client()) return;
 
         apply(state.rules);
         for(var tile : world.tiles){
@@ -65,11 +65,12 @@ public final class IndustrialMode{
         removeHostileUnits();
         Groups.bullet.each(b -> b.absorb());
         state.enemies = 0;
+        if(IndustrialCampaign.active()) IndustrialCampaign.prepareInfo(state.rules.sector);
     }
 
     /** Also reject delayed enemy spawns before entities can act. No per-tick tile scan. */
     public static void removeHostileUnits(){
-        if(!state.rules.industrial || state.isCampaign() || net.client()) return;
+        if(!state.rules.industrial || (state.isCampaign() && !IndustrialCampaign.active()) || net.client()) return;
         Groups.unit.each(u -> {
             if(u.team != state.rules.defaultTeam) u.remove();
         });

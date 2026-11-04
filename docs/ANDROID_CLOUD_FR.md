@@ -1,6 +1,6 @@
 # Compiler et installer depuis un smartphone Android
 
-Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 3 ajoute un mode **Industriel** aux parties personnalisées ; les autres modes et la campagne restent disponibles. Elle n’est pas une version officielle de Mindustry.
+Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 4 ajoute une **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
 
 ## Lancer une compilation sans ordinateur
 
@@ -16,20 +16,34 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m3.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m4.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
-5. Lancer **Mindustry Industrial M3**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
+5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
-M3 utilise l’identifiant `io.anuke.mindustry.industrial.m3`. Elle coexiste avec Mindustry officiel et l’APK de Mission 2 (`io.anuke.mindustry.industrial`). **Ne désinstaller aucune de ces applications pour installer M3.** Cette séparation protège leurs sauvegardes : la clé de test de Mission 2 n’avait pas été conservée par l’ancien cache et ne permet pas une mise à jour signée compatible.
+## Mise à jour de M3 et sauvegardes
 
-Pour transférer vos parties, exporter les données depuis les paramètres de l’ancienne application, puis importer cette archive depuis les paramètres de M3. Les anciennes parties conservent leur mode d’origine ; l’import ne les transforme pas en parties industrielles.
+M4 conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 4. Installer l’APK par-dessus M3 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+
+L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
+
+## Démarrer la campagne industrielle
+
+1. Ouvrir **Jouer → Campagne**. Au premier lancement, choisir **Campagne industrielle**, puis valider. Si une campagne existe déjà, sélectionner **Serpulo industrielle** dans la liste des planètes de la carte planétaire.
+2. Sélectionner le secteur de départ **170**, puis **Jouer**. Il reçoit le stock normal limité de **100 cuivre**. Extraire et produire les ressources avec les machines existantes.
+3. Revenir à la carte planétaire depuis le menu de campagne. Après établissement d’une base, les secteurs adjacents deviennent accessibles sans conquête ni amélioration militaire du noyau.
+4. Sélectionner un secteur voisin : le chargement de déploiement et son coût utilisent l’interface d’origine. Il faut produire les ressources nécessaires avant de confirmer le départ. Aucun second stock gratuit n’est ajouté.
+5. Revenir à un secteur possédant une base pour poursuivre son usine. Les secteurs et stocks sont sauvegardés séparément de Serpulo classique.
+
+Cette planète réutilise le générateur de Serpulo sans modifier son algorithme. Elle supprime les ennemis, points d’apparition, vagues, invasions et fins de partie militaires. Les coûts, recettes, besoins électriques et ressources finies du noyau restent normaux. Les gisements gardent le comportement infini de Mindustry.
+
+Les machines Serpulo sont disponibles sans recherche dans cette première campagne. Construire et produire ici ne débloque pas la recherche classique. Le bouton **Machines** rappelle cette limite ; un arbre industriel progressif reste à développer. Pour effectuer des recherches classiques, rejoindre une campagne classique. Les armes existantes restent présentes mais ne sont pas requises.
+
+Le transport utilise uniquement les chargements et systèmes originaux : aucune fusée personnalisée ni consommation de carburant supplémentaire. La production des secteurs absents conserve la simulation statistique de Mindustry, sans simulation économique nouvelle. Le mode Industriel sur carte personnalisée reste disponible.
 
 ## Signature et mises à jour de test
 
-L’APK est signé avec une clé Android de **debug**, ce qui permet son installation. Ce n’est pas une clé de publication. Le workflow M3 utilise un chemin de clé explicite, partagé avec Gradle et le cache GitHub, pour faciliter les mises à jour de test. Le cache peut expirer ou être supprimé ; la signature peut alors changer. Son empreinte est enregistrée dans `apk-signature.txt`. Une clé durable dans GitHub Secrets sera nécessaire avant une distribution de production.
-
-Si Android refuse une mise à jour pour signature incompatible, exporter les sauvegardes depuis l’application de test avant de désinstaller **uniquement cette application de test**, puis installer le nouvel APK. Une clé stable stockée dans GitHub Secrets sera nécessaire avant toute distribution durable. Ne pas désactiver Play Protect globalement ni forcer l’installation si le fichier ou sa provenance sont douteux.
+La clé de test M3 est réutilisée depuis le cache GitHub. Son empreinte SHA-256 est `61254fd2280bf34aa64bd06405cf0e2bc9b2d8fe7df4cc615c39983bcdfd8086`. Le workflow refuse désormais de compiler si cette clé est absente ou différente : il ne la remplace pas automatiquement. Le cache peut expirer ; une clé durable protégée dans GitHub Secrets sera nécessaire avant une distribution de production. Ne pas désinstaller l’application pour contourner une erreur de signature.
 
 ## Vérification et diagnostic
 

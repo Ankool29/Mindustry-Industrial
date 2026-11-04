@@ -23,7 +23,8 @@ public class Planets{
     serpulo,
     gier,
     notva,
-    verilus;
+    verilus,
+    industrialSerpulo;
 
     public static void load(){
         sun = new Planet("sun", null, 4f){{
@@ -167,6 +168,25 @@ public class Planets{
             gen.carbonChance = 0.1f;
             gen.ferricChance = 0f;
         });
+
+        // Append content: do not change the identities of existing planets or sectors.
+        industrialSerpulo = new IndustrialPlanet("industrial-serpulo", sun, 1f, 3){{
+            generator = new SerpuloPlanetGenerator();
+            sectorSeed = 2;
+            startSector = 170;
+            meshLoader = () -> new HexMesh(this, 6);
+            atmosphereColor = Color.valueOf("3c1b8f");
+            iconColor = Color.valueOf("7d4dff");
+            icon = "hammer";
+            launchCapacityMultiplier = 0.5f;
+            allowSelfSectorLaunch = true;
+            ruleSetter = r -> {
+                r.waveTeam = Team.crux;
+                r.placeRangeCheck = false;
+                r.hideSpawns = true;
+                r.derelictRepair = true;
+            };
+        }};
     }
 
     private static Planet makeAsteroid(String name, Planet parent, Block base, Block tint, int seed, float tintThresh, int pieces, float scale, Cons<AsteroidGenerator> cgen){
