@@ -25,7 +25,6 @@ jobs:
       # Upstream uses CI=true to configure its private release keystore.
       # This job produces a debug APK and must not request that key.
       CI: 'false'
-      MINDUSTRY_DEBUG_KEYSTORE: ${{ runner.temp }}/mindustry-industrial-m3.keystore
     steps:
       - name: Checkout Mindustry
         uses: actions/checkout@v4
@@ -59,6 +58,9 @@ jobs:
 
       - name: Set up Gradle cache
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Locate M3 test signing key
+        run: echo "MINDUSTRY_DEBUG_KEYSTORE=$RUNNER_TEMP/mindustry-industrial-m3.keystore" >> "$GITHUB_ENV"
 
       - name: Restore test signing key
         uses: actions/cache@v4
