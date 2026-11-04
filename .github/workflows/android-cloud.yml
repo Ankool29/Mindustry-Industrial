@@ -4,6 +4,7 @@ on:
   push:
     branches: [industrial-android]
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -29,6 +30,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: Mindustry
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'industrial-android' || github.sha }}
           persist-credentials: false
 
       - name: Checkout matching Arc
@@ -72,7 +74,7 @@ jobs:
             echo "Arc commit: $(git -C ../Arc rev-parse HEAD)"
             java -version 2>&1
             cat gradle/wrapper/gradle-wrapper.properties
-            rg 'com.android.tools.build:gradle|compileSdk|targetSdkVersion|minSdkVersion|buildToolsVersion' android/build.gradle
+            grep -E 'com.android.tools.build:gradle|compileSdk|targetSdkVersion|minSdkVersion|buildToolsVersion' android/build.gradle
             sdkmanager --list_installed
           } | tee build-evidence/versions.txt
 
@@ -96,10 +98,10 @@ jobs:
             | tee build-evidence/apk-signature.txt
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" \
             | tee build-evidence/apk-badging.txt
-          rg "package: name='io.anuke.mindustry.industrial'" build-evidence/apk-badging.txt
+          grep -E "package: name='io.anuke.mindustry.industrial'" build-evidence/apk-badging.txt
           unzip -Z1 "$apk" > build-evidence/apk-contents.txt
-          rg '^lib/arm64-v8a/.*\.so$' build-evidence/apk-contents.txt
-          rg '^assets/sprites/sprites\.aatls$' build-evidence/apk-contents.txt
+          grep -E '^lib/arm64-v8a/.*\.so$' build-evidence/apk-contents.txt
+          grep -E '^assets/sprites/sprites\.aatls$' build-evidence/apk-contents.txt
           (cd dist && sha256sum Mindustry-Industrial-v160.7-test.apk > SHA256SUMS.txt)
           cp LICENSE dist/LICENSE
           git archive --format=tar.gz --output=dist/mindustry-corresponding-source.tar.gz HEAD
@@ -107,7 +109,7 @@ jobs:
           cp ../Arc/LICENSE dist/LICENSE-Arc-Apache-2.0.txt
           cp docs/ANDROID_CLOUD_FR.md dist/INSTALLATION-ANDROID.md
           {
-            echo "Source: https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA"
+            echo "Source: https://github.com/$GITHUB_REPOSITORY/tree/$(git rev-parse HEAD)"
             echo "Run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo "Arc: https://github.com/Anuken/Arc/tree/7445105cd2683daf5b9ac7033ebb07265d3e814d"
             echo 'Test debug APK. Original gameplay. Not an official Mindustry build.'
