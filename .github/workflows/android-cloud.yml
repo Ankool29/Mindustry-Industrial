@@ -1,0 +1,12 @@
+name: Android cloud APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    # The work branch is based on v160.7. Do not compile upstream master here.
+    uses: Ankool29/Mindustry-Industrial/.github/workflows/android-cloud.yml@industrial-android

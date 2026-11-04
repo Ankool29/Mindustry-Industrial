@@ -1,3 +1,13 @@
+## Mindustry Industrial — compilation Android dans le cloud
+
+La branche de travail basée sur **v160.7** est [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android). Le gameplay original est conservé.
+
+Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
+
+[Guide de téléchargement et d’installation sur Android](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
+
+---
+
 ![Logo](core/assets-raw/sprites/ui/logo.png)
 
 [![Build Status](https://github.com/Anuken/Mindustry/workflows/Tests/badge.svg?event=push)](https://github.com/Anuken/Mindustry/actions)
