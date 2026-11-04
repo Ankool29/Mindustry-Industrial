@@ -37,6 +37,8 @@ Le ZIP pèse environ **168 Mo**, car les sources et licences sont incluses. L’
 
 Le journal GitHub constate `tools:pack` réussi en **1 min 17 s**, puis `android:assembleDebug` réussi en **1 min 25 s**. Toutes les étapes du job, y compris la vérification et la publication, ont réussi.
 
+Le [lancement manuel 41878340205](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41878340205), déclenché via `workflow_dispatch` sur `master`, a également terminé avec le résultat **success**. Le parcours de relance depuis le bouton GitHub est donc lui aussi validé par une compilation réelle.
+
 SHA-256 de l’APK téléchargé, contrôlé contre `SHA256SUMS.txt` :
 
 ```text
