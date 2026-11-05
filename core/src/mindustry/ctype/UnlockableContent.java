@@ -13,6 +13,7 @@ import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.game.EventType.*;
 import mindustry.game.IndustrialCampaign;
+import mindustry.game.IndustrialResearch;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.mod.*;
@@ -251,7 +252,10 @@ public abstract class UnlockableContent extends MappableContent{
 
     /** Makes this piece of content unlocked; if it already unlocked, nothing happens. */
     public void unlock(){
-        if(IndustrialCampaign.active()) return;
+        if(IndustrialCampaign.active()){
+            IndustrialResearch.discover(this);
+            return;
+        }
         if(!unlocked && !alwaysUnlocked){
             unlocked = true;
             Core.settings.put(name + "-unlocked", true);
@@ -264,7 +268,10 @@ public abstract class UnlockableContent extends MappableContent{
     /** Unlocks this content, but does not fire any events. */
     public void quietUnlock(){
         // A transition to a classic preset unlocks it before the old world is reset.
-        if(IndustrialCampaign.active() && !(this instanceof SectorPreset)) return;
+        if(IndustrialCampaign.active() && !(this instanceof SectorPreset)){
+            IndustrialResearch.discover(this);
+            return;
+        }
         if(!unlocked()){
             unlocked = true;
             Core.settings.put(name + "-unlocked", true);

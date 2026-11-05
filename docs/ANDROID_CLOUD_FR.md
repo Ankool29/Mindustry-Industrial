@@ -1,6 +1,6 @@
 # Compiler et installer depuis un smartphone Android
 
-Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 5 simplifie les menus industriels de la **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
+Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 6B prépare un état de recherche indépendant pour la **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
 
 ## Lancer une compilation sans ordinateur
 
@@ -16,14 +16,14 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m5.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m6b.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
-## Mise à jour de M3/M4 et sauvegardes
+## Mise à jour de M3/M4/M5 et sauvegardes
 
-M5 conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 5. Installer l’APK par-dessus M3 ou M4 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+M6B conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 6. Installer l’APK par-dessus M3, M4 ou M5 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
 
 L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
 
@@ -48,6 +48,14 @@ Les tourelles offensives, murs défensifs, mines, boucliers et équipements excl
 Les matériaux à usage mixte restent visibles : graphite, silicium, thorium, pyratite et composé explosif servent aussi aux recettes, à la construction ou à l’énergie. Ce filtre ne change aucune recette, coût, recherche débloquée, progression de secteur ni production hors écran. Un bâtiment militaire déjà construit dans une ancienne partie n’est pas supprimé. Les menus classiques retrouvent leur contenu militaire habituel après changement de mode.
 
 Dans **Campagne → Serpulo industrielle → Machines**, consulter ou rechercher les machines, matières et drones industriels. Ce catalogue est consultatif : M4 ne possédait pas d’arbre industriel et M5 n’ajoute pas de nouvelle progression. L’arbre classique reste intact et accessible dans la campagne classique.
+
+## État de recherche indépendant (M6B)
+
+L’état industriel est enregistré dans les données de l’application, sous une clé distincte `industrial-research-v1-industrial-serpulo`. Il contient les technologies étudiées, les découvertes de matières et les contributions de recherche partielles. Les noms de contenus servent d’identifiants stables ; les clés de recherche classiques restent inchangées. Cette donnée suit l’export/import natif des données du jeu ; un seul fichier de secteur exporté ne contient pas à lui seul tout le profil de recherche.
+
+Le catalogue **Machines** est conservé, sans nouveau bouton de paiement. Toutes les technologies restent utilisables dans les parties industrielles, y compris les anciennes M4/M5. La découverte d’une matière ne déclenche aucun achat. Il n’y a ni coût supplémentaire de colonisation, ni verrou de secteur, ni modification de production hors écran.
+
+Un arbre technique détaché réutilise les nœuds et contenus natifs sans remplacer `content.techNode` ni entrer dans les listes de déblocage automatique classiques. Les objectifs de découverte, de recherche et de nombre de bases industrielles sont préparés pour la suite. La fonction de paiement, réservée au futur écran de recherche et testée séparément, ne peut puiser que dans les bases de la planète industrielle. Aucun nouvel arbre de progression n’est encore proposé au joueur.
 
 ## Signature et mises à jour de test
 

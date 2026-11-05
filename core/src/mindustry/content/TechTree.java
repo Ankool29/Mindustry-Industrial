@@ -102,6 +102,11 @@ public class TechTree{
         public @Nullable Planet planet;
 
         public TechNode(@Nullable TechNode parent, UnlockableContent content, ItemStack[] requirements){
+            this(parent, content, requirements, true);
+        }
+
+        /** Detached nodes reuse layout/content without touching classic pointers, settings or auto-unlocks. */
+        public TechNode(@Nullable TechNode parent, UnlockableContent content, ItemStack[] requirements, boolean register){
             if(parent != null){
                 parent.children.add(this);
                 rootNode = parent.rootNode == null ? parent : parent.rootNode;
@@ -120,6 +125,13 @@ public class TechTree{
                 for(ItemStack requirement : requirements){
                     requirement.amount = (int)(requirement.amount * researchCostMultipliers.get(requirement.item, 1));
                 }
+            }
+
+            if(!register){
+                this.requirements = ItemStack.copy(requirements);
+                finishedRequirements = ItemStack.copy(requirements);
+                for(var stack : finishedRequirements) stack.amount = 0;
+                return;
             }
 
             setupRequirements(requirements);
