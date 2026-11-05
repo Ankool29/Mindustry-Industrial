@@ -242,7 +242,7 @@ public class UnitFactory extends UnitBlock{
         public void created(){
             //auto-set to the first plan, it's better than nothing.
             if(currentPlan == -1){
-                currentPlan = plans.indexOf(u -> u.unit.unlockedNow());
+                currentPlan = plans.indexOf(u -> u.unit.unlockedNow() && IndustrialContent.visible(u.unit));
             }
         }
 

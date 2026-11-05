@@ -69,6 +69,9 @@ class IndustrialContentTests{
         Blocks.airFactory.getPlanConfigs(choices);
         assertTrue(choices.contains(UnitTypes.mono));
         assertFalse(choices.contains(UnitTypes.flare));
+        var fresh = (UnitFactory.UnitFactoryBuild)Blocks.airFactory.buildType.get();
+        fresh.created();
+        assertSame(UnitTypes.mono, fresh.unit(), "New industrial factories must default to a visible civilian plan");
         choices.clear();
         state.rules.sector = null; // Inspect Erekir payload choices in an industrial custom game.
         Blocks.constructor.getPlanConfigs(choices);

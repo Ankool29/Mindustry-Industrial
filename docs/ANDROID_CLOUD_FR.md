@@ -43,7 +43,7 @@ Le transport utilise uniquement les chargements et systèmes originaux : aucune 
 
 ## Interface industrielle (M5)
 
-Les tourelles offensives, murs défensifs, mines, boucliers et équipements exclusivement militaires sont masqués dans la construction, les configurations, les schémas et la base de données en partie industrielle. Les drones capables de construire, extraire ou transporter sont conservés avec leurs fabriques/reconstructeurs ; leurs options de combat pur et leurs statistiques d’armes/munitions sont masquées. Les convoyeurs et infrastructures de charges utiles restent disponibles.
+Les tourelles offensives, murs défensifs, mines, boucliers et équipements exclusivement militaires sont masqués dans la construction, les configurations, les schémas et la base de données en partie industrielle. Les drones capables de construire, extraire ou transporter sont conservés avec leurs fabriques/reconstructeurs ; les nouvelles fabriques sélectionnent une option civile par défaut ; leurs options de combat pur et leurs statistiques d’armes/munitions sont masquées. Les convoyeurs et infrastructures de charges utiles restent disponibles.
 
 Les matériaux à usage mixte restent visibles : graphite, silicium, thorium, pyratite et composé explosif servent aussi aux recettes, à la construction ou à l’énergie. Ce filtre ne change aucune recette, coût, recherche débloquée, progression de secteur ni production hors écran. Un bâtiment militaire déjà construit dans une ancienne partie n’est pas supprimé. Les menus classiques retrouvent leur contenu militaire habituel après changement de mode.
 
