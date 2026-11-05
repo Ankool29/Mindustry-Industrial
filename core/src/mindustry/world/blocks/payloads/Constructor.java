@@ -8,6 +8,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.game.IndustrialContent;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.storage.*;
@@ -48,7 +49,7 @@ public class Constructor extends BlockProducer{
 
     @Override
     public void getPlanConfigs(Seq<UnlockableContent> options){
-        options.add(content.blocks().select(this::canProduce));
+        options.add(content.blocks().select(b -> canProduce(b) && IndustrialContent.visible(b)));
     }
 
     public boolean canProduce(Block b){
@@ -65,7 +66,7 @@ public class Constructor extends BlockProducer{
 
         @Override
         public void buildConfiguration(Table table){
-            ItemSelection.buildTable(Constructor.this, table, filter.isEmpty() ? content.blocks().select(Constructor.this::canProduce) : filter, () -> recipe, this::configure, selectionRows, selectionColumns);
+            ItemSelection.buildTable(Constructor.this, table, (filter.isEmpty() ? content.blocks().select(Constructor.this::canProduce) : filter).select(IndustrialContent::visible), () -> recipe, this::configure, selectionRows, selectionColumns);
         }
 
         @Override

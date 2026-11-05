@@ -38,7 +38,7 @@ public class ResearchDialog extends BaseDialog{
     @Override
     public Dialog show(){
         if(IndustrialCampaign.active() || (ui.planet.isShown() && IndustrialCampaign.isPlanet(ui.planet.state.planet))){
-            ui.showInfo("@industrial.research.info");
+            new IndustrialCatalogDialog().show();
             return this;
         }
         return super.show();

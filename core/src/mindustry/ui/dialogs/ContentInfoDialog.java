@@ -10,6 +10,7 @@ import arc.util.*;
 import mindustry.core.UI;
 import mindustry.ctype.*;
 import mindustry.gen.*;
+import mindustry.game.IndustrialContent;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.ui.*;
@@ -19,11 +20,13 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class ContentInfoDialog extends BaseDialog{
+    private boolean industrialView;
 
     public ContentInfoDialog(){
         super("@info.title");
 
         addCloseButton();
+        hidden(() -> industrialView = false);
 
         keyDown(key -> {
             if(key == Binding.blockInfo.value.key){
@@ -33,6 +36,20 @@ public class ContentInfoDialog extends BaseDialog{
     }
 
     public void show(UnlockableContent content){
+        if(isShown() && industrialView){
+            showIndustrial(content);
+        }else{
+            show(content, false);
+        }
+    }
+
+    public void showIndustrial(UnlockableContent content){
+        IndustrialContent.catalog(() -> show(content, true));
+    }
+
+    private void show(UnlockableContent content, boolean industrial){
+        if(!IndustrialContent.visible(content) || (industrial && !IndustrialContent.industrial(content))) return;
+        industrialView = industrial;
         cont.clear();
 
         Table table = new Table();
@@ -86,6 +103,7 @@ public class ContentInfoDialog extends BaseDialog{
             }
 
             for(Stat stat : map.keys()){
+                if(!IndustrialContent.visible(stat) || (industrial && !IndustrialContent.industrial(stat))) continue;
                 table.table(inset -> {
                     inset.left();
                     stats.statInfo(inset.add("[lightgray]" + stat.localized() + ":[] ").left().top(), stat);

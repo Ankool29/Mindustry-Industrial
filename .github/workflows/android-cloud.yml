@@ -96,14 +96,14 @@ jobs:
           set -o pipefail
           ./gradlew --version 2>&1 | tee build-evidence/gradle-version.txt
           ./gradlew tests:test --no-daemon --max-workers=2 --stacktrace \
-            -Pbuildversion=160.7 -PversionType=industrial-m4 -PandroidVersionCode=4 \
+            -Pbuildversion=160.7 -PversionType=industrial-m5 -PandroidVersionCode=5 \
             2>&1 | tee build-evidence/tests.log
           # Prepare atlases before Android merges assets on a clean runner.
           ./gradlew tools:pack --no-daemon --max-workers=2 --stacktrace \
-            -Pbuildversion=160.7 -PversionType=industrial-m4 -PandroidVersionCode=4 \
+            -Pbuildversion=160.7 -PversionType=industrial-m5 -PandroidVersionCode=5 \
             2>&1 | tee build-evidence/sprite-pack.log
           ./gradlew android:assembleDebug --no-daemon --max-workers=2 --stacktrace \
-            -Pbuildversion=160.7 -PversionType=industrial-m4 -PandroidVersionCode=4 \
+            -Pbuildversion=160.7 -PversionType=industrial-m5 -PandroidVersionCode=5 \
             2>&1 | tee build-evidence/build.log
 
       - name: Verify APK and prepare download
@@ -111,8 +111,8 @@ jobs:
           mapfile -t apks < <(find android/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -type f)
           test "${#apks[@]}" -eq 1
           mkdir -p dist
-          cp "${apks[0]}" dist/Mindustry-Industrial-v160.7-m4.apk
-          apk=dist/Mindustry-Industrial-v160.7-m4.apk
+          cp "${apks[0]}" dist/Mindustry-Industrial-v160.7-m5.apk
+          apk=dist/Mindustry-Industrial-v160.7-m5.apk
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$apk" \
             | tee build-evidence/apk-signature.txt
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -P 16 -v 4 "$apk" \
@@ -123,7 +123,7 @@ jobs:
           unzip -Z1 "$apk" > build-evidence/apk-contents.txt
           grep -E '^lib/arm64-v8a/.*\.so$' build-evidence/apk-contents.txt
           grep -E '^assets/sprites/sprites\.aatls$' build-evidence/apk-contents.txt
-          (cd dist && sha256sum Mindustry-Industrial-v160.7-m4.apk > SHA256SUMS.txt)
+          (cd dist && sha256sum Mindustry-Industrial-v160.7-m5.apk > SHA256SUMS.txt)
           cp LICENSE dist/LICENSE
           git archive --format=tar.gz --output=dist/mindustry-corresponding-source.tar.gz HEAD
           git -C ../Arc archive --format=tar.gz --output="$PWD/dist/arc-corresponding-source.tar.gz" HEAD
@@ -133,7 +133,7 @@ jobs:
             echo "Source: https://github.com/$GITHUB_REPOSITORY/tree/$(git rev-parse HEAD)"
             echo "Run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo "Arc: https://github.com/Anuken/Arc/tree/7445105cd2683daf5b9ac7033ebb07265d3e814d"
-            echo 'Mission 4: Separate industrial planetary campaign; previous saves and modes retained. Unofficial debug test APK.'
+            echo 'Mission 5: Industrial UI filters; recipes, sector progression and previous saves retained. Unofficial debug test APK.'
           } > dist/BUILD-INFO.txt
           {
             echo '## APK Android prêt'

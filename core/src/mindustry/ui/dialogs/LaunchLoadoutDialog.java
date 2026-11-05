@@ -169,6 +169,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
                 int[] i = {0};
 
                 Cons<Schematic> handler = s -> {
+                    if(IndustrialCampaign.isPlanet(destination.planet) && s.tiles.contains(tile -> !IndustrialContent.industrial(tile.block))) return;
                     if(s.tiles.contains(tile -> !tile.block.supportsEnv(sector.planet.defaultEnv) ||
                     //make sure block can be built here.
                     !tile.block.isOnPlanet(sector.planet))){

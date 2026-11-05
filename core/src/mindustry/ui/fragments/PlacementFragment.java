@@ -765,11 +765,11 @@ public class PlacementFragment{
     }
 
     Seq<Block> getByCategory(Category cat){
-        return returnArray.selectFrom(content.blocks(), block -> block.category == cat && block.isVisible() && block.environmentBuildable());
+        return returnArray.selectFrom(content.blocks(), block -> block.category == cat && IndustrialContent.visible(block) && block.isVisible() && block.environmentBuildable());
     }
 
     Seq<Block> getUnlockedByCategory(Category cat){
-        return returnArray2.selectFrom(content.blocks(), block -> block.category == cat && block.isVisible() && unlocked(block)).sort((b1, b2) -> Boolean.compare(!b1.isPlaceable(), !b2.isPlaceable()));
+        return returnArray2.selectFrom(content.blocks(), block -> block.category == cat && IndustrialContent.visible(block) && block.isVisible() && unlocked(block)).sort((b1, b2) -> Boolean.compare(!b1.isPlaceable(), !b2.isPlaceable()));
     }
 
     Block getSelectedBlock(Category cat){
@@ -777,7 +777,7 @@ public class PlacementFragment{
     }
 
     boolean unlocked(Block block){
-        return block.unlockedNowHost() && block.placeablePlayer && block.environmentBuildable() &&
+        return IndustrialContent.visible(block) && block.unlockedNowHost() && block.placeablePlayer && block.environmentBuildable() &&
             block.supportsEnv(state.rules.env);
     }
 

@@ -140,6 +140,7 @@ public class SchematicsDialog extends BaseDialog{
                 firstSchematic = null;
 
                 for(Schematic s : schematics.all()){
+                    if(!IndustrialContent.visible(s)) continue;
                     //make sure *tags* fit
                     if(selectedTags.any() && !s.labels.containsAll(selectedTags)) continue;
                     //make sure search fits

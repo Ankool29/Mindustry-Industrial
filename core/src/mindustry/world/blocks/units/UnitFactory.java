@@ -18,6 +18,7 @@ import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.EventType.*;
+import mindustry.game.IndustrialContent;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
@@ -152,6 +153,7 @@ public class UnitFactory extends UnitBlock{
             table.row();
 
             for(var plan : plans){
+                if(!IndustrialContent.visible(plan.unit)) continue;
                 table.table(Styles.grayPanel, t -> {
 
                     if(plan.unit.isBanned()){
@@ -202,7 +204,7 @@ public class UnitFactory extends UnitBlock{
     @Override
     public void getPlanConfigs(Seq<UnlockableContent> options){
         for(var plan : plans){
-            if(!plan.unit.isBanned()){
+            if(!plan.unit.isBanned() && IndustrialContent.visible(plan.unit)){
                 options.add(plan.unit);
             }
         }
@@ -283,7 +285,7 @@ public class UnitFactory extends UnitBlock{
 
         @Override
         public void buildConfiguration(Table table){
-            Seq<UnitType> units = Seq.with(plans).map(u -> u.unit).retainAll(u -> u.unlockedNow() && !u.isBanned());
+            Seq<UnitType> units = Seq.with(plans).map(u -> u.unit).retainAll(u -> u.unlockedNow() && !u.isBanned() && IndustrialContent.visible(u));
 
             if(units.any()){
                 ItemSelection.buildTable(UnitFactory.this, table, units, () -> currentPlan == -1 ? null : plans.get(currentPlan).unit, unit -> configure(plans.indexOf(u -> u.unit == unit)), selectionRows, selectionColumns);

@@ -1,6 +1,6 @@
 # Compiler et installer depuis un smartphone Android
 
-Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 4 ajoute une **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
+Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 5 simplifie les menus industriels de la **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
 
 ## Lancer une compilation sans ordinateur
 
@@ -16,14 +16,14 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m4.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m5.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
-## Mise à jour de M3 et sauvegardes
+## Mise à jour de M3/M4 et sauvegardes
 
-M4 conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 4. Installer l’APK par-dessus M3 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+M5 conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 5. Installer l’APK par-dessus M3 ou M4 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
 
 L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
 
@@ -37,9 +37,17 @@ L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindust
 
 Cette planète réutilise le générateur de Serpulo sans modifier son algorithme. Elle supprime les ennemis, points d’apparition, vagues, invasions et fins de partie militaires. Les coûts, recettes, besoins électriques et ressources finies du noyau restent normaux. Les gisements gardent le comportement infini de Mindustry.
 
-Les machines Serpulo sont disponibles sans recherche dans cette première campagne. Construire et produire ici ne débloque pas la recherche classique. Le bouton **Machines** rappelle cette limite ; un arbre industriel progressif reste à développer. Pour effectuer des recherches classiques, rejoindre une campagne classique. Les armes existantes restent présentes mais ne sont pas requises.
+Les machines Serpulo sont disponibles sans recherche dans cette première campagne. Construire et produire ici ne débloque pas la recherche classique. Le bouton **Machines** ouvre le catalogue industriel filtré et rappelle cette limite ; un arbre industriel progressif reste à développer. Pour effectuer des recherches classiques, rejoindre une campagne classique. Les contenus exclusivement militaires sont masqués dans les menus industriels, sans être supprimés du moteur ni des sauvegardes.
 
 Le transport utilise uniquement les chargements et systèmes originaux : aucune fusée personnalisée ni consommation de carburant supplémentaire. La production des secteurs absents conserve la simulation statistique de Mindustry, sans simulation économique nouvelle. Le mode Industriel sur carte personnalisée reste disponible.
+
+## Interface industrielle (M5)
+
+Les tourelles offensives, murs défensifs, mines, boucliers et équipements exclusivement militaires sont masqués dans la construction, les configurations, les schémas et la base de données en partie industrielle. Les drones capables de construire, extraire ou transporter sont conservés avec leurs fabriques/reconstructeurs ; leurs options de combat pur et leurs statistiques d’armes/munitions sont masquées. Les convoyeurs et infrastructures de charges utiles restent disponibles.
+
+Les matériaux à usage mixte restent visibles : graphite, silicium, thorium, pyratite et composé explosif servent aussi aux recettes, à la construction ou à l’énergie. Ce filtre ne change aucune recette, coût, recherche débloquée, progression de secteur ni production hors écran. Un bâtiment militaire déjà construit dans une ancienne partie n’est pas supprimé. Les menus classiques retrouvent leur contenu militaire habituel après changement de mode.
+
+Dans **Campagne → Serpulo industrielle → Machines**, consulter ou rechercher les machines, matières et drones industriels. Ce catalogue est consultatif : M4 ne possédait pas d’arbre industriel et M5 n’ajoute pas de nouvelle progression. L’arbre classique reste intact et accessible dans la campagne classique.
 
 ## Signature et mises à jour de test
 

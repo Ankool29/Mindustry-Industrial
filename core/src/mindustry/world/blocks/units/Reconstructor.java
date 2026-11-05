@@ -18,6 +18,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.EventType.*;
+import mindustry.game.IndustrialContent;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
@@ -97,7 +98,7 @@ public class Reconstructor extends UnitBlock{
         stats.add(Stat.output, table -> {
             table.row();
             for(var upgrade : upgrades){
-                if(upgrade[0].unlockedNow() && upgrade[1].unlockedNow()){
+                if(upgrade[0].unlockedNow() && upgrade[1].unlockedNow() && IndustrialContent.visible(upgrade[0]) && IndustrialContent.visible(upgrade[1])){
                     table.table(Styles.grayPanel, t -> {
                         t.left();
 

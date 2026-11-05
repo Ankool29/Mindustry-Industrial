@@ -14,6 +14,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
+import mindustry.game.IndustrialContent;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -133,7 +134,7 @@ public class DatabaseDialog extends BaseDialog{
             for(int j = 0; j < categoryContents.size; j++){
                 String tagName = categoryContents.orderedKeys().get(j);
                 Seq<UnlockableContent> array = categoryContents.get(tagName).select(u ->
-                !u.isHidden() && !u.hideDatabase &&
+                !u.isHidden() && !u.hideDatabase && IndustrialContent.visible(u) &&
                 (tab == Planets.sun || u.allDatabaseTabs || u.databaseTabs.contains(tab)) &&
                 (text.isEmpty() || u.localizedName.toLowerCase(Locale.ROOT).contains(text))).as();
                 if(array.isEmpty()) continue;
@@ -241,6 +242,6 @@ public class DatabaseDialog extends BaseDialog{
     }
 
     boolean unlocked(UnlockableContent content){
-        return (!Vars.state.isCampaign() && !Vars.state.isMenu()) || content.unlocked();
+        return IndustrialContent.active() || (!Vars.state.isCampaign() && !Vars.state.isMenu()) || content.unlocked();
     }
 }
