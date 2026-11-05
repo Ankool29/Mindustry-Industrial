@@ -1441,8 +1441,12 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                 loadouts.show(block, from, sector, () -> {
                     var loadout = universe.getLastLoadout();
                     var schemCore = loadout.findCore();
-                    from.removeItems(loadout.requirements());
-                    from.removeItems(universe.getLaunchResources());
+                    if(IndustrialCampaign.strict(sector.planet)){
+                        IndustrialExpansion.prepare(from, sector, loadout.requirements(), universe.getLaunchResources());
+                    }else{
+                        from.removeItems(loadout.requirements());
+                        from.removeItems(universe.getLaunchResources());
+                    }
 
                     Events.fire(new SectorLaunchLoadoutEvent(sector, from, loadout));
 

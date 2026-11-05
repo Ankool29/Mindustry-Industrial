@@ -16,14 +16,14 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m6c.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m6d.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
 ## Mise à jour de M3/M4/M5/M6B et sauvegardes
 
-M6C conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 7. Installer l’APK par-dessus M3, M4, M5 ou M6B : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+M6D conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 8. Installer l’APK par-dessus M3, M4, M5, M6B ou M6C : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
 
 L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
 
@@ -113,3 +113,11 @@ Les coûts de construction, intrants et besoins électriques restent actifs. Les
 Le mode désactive les vagues, les conditions militaires de victoire/défaite et les objectifs de carte ; il retire les bâtiments/unités ennemis de la copie chargée du monde. Les processeurs de monde sont désactivés pour empêcher les scripts de carte de réintroduire des attaques ; les processeurs logiques ordinaires restent disponibles. Le fichier de carte original n’est pas modifié. Le bouton de règles personnalisées est désactivé pour ce mode afin de conserver ces garanties.
 
 Sauvegarder et reprendre normalement : le mode est enregistré avec la partie. Les anciennes sauvegardes restent dans leur mode d’origine ; elles ne sont pas converties automatiquement. Le multijoueur avec une version officielle ou un ancien APK du fork n’est pas garanti : utiliser la même version du fork sur les participants. Les mods modifiant les règles ou le moteur ne font pas partie de la validation de cette première version.
+
+## Mission 6D — économie de colonisation
+
+La surcharge concerne uniquement **Serpulo industrielle — progression**. Les choix de départ et le voisinage M6C restent inchangés (six voisins autour de 170 dans cette version). Les deux premières implantations économiques sont sans surcharge ; la troisième demande 250 cuivre/200 plomb, la quatrième 500/400, la cinquième 750/600, puis les paliers plafonnent à 2000/1600. Les coûts natifs du noyau/schéma et du chargement s’ajoutent et sont détaillés avant confirmation. Le chargement maximal réserve d’abord le schéma et la surcharge.
+
+Les parties strictes M6C sont conservées et démarrent cette nouvelle économie au compteur 1, quel que soit leur nombre de bases existantes : aucun rattrapage de frais. Une visite est gratuite ; réimplanter après abandon compte comme une implantation supplémentaire et ne diminue jamais le compteur. Les deux autres campagnes ne changent pas.
+
+Annuler avant départ ne prélève rien. Le paiement intervient après sauvegarde réussie de la destination ; un journal reprend une opération interrompue. Il ne faut pas restaurer isolément `settings.bin` ou un secteur d’une autre date : utiliser une exportation complète pour conserver la cohérence entre les secteurs, stocks et journal. Aucun effacement n’est requis pour tester.

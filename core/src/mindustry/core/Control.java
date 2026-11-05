@@ -78,6 +78,12 @@ public class Control implements ApplicationListener, Loadable{
                     ui.showInfo("@mods.initfailed");
                 });
             }
+            try{
+                IndustrialExpansion.recover(Planets.industrialSerpuloProgressive);
+            }catch(Throwable failure){
+                Log.err(failure);
+                ui.showException("Industrial expansion recovery", failure);
+            }
             checkAutoUnlocks();
         });
 
@@ -435,6 +441,10 @@ public class Control implements ApplicationListener, Loadable{
 
     void playSector(@Nullable Sector origin, Sector sector, WorldReloader reloader){
         ui.loadAnd(() -> {
+            if(IndustrialCampaign.strict(sector.planet)){
+                var pending = IndustrialExpansion.ledger(sector.planet).pending;
+                if(pending != null && pending.destination != sector.id) IndustrialExpansion.recover(sector.planet);
+            }
             if(saves.getCurrent() != null && state.isGame()){
                 control.saves.getCurrent().save();
                 control.saves.resetSave();
@@ -571,6 +581,7 @@ public class Control implements ApplicationListener, Loadable{
     }
 
     public void playNewSector(@Nullable Sector origin, Sector sector, WorldReloader reloader, WorldParams params, @Nullable Runnable beforePlay){
+        if(IndustrialCampaign.strict(sector.planet)) IndustrialExpansion.ledger(sector.planet);
         reloader.begin();
         world.loadSector(sector, params);
         state.rules.sector = sector;
@@ -584,7 +595,9 @@ public class Control implements ApplicationListener, Loadable{
 
         Events.fire(new RulesLoadEvent(state.rules));
         logic.play();
+        IndustrialExpansion.stamp(sector);
         control.saves.saveSector(sector);
+        IndustrialExpansion.established(sector);
         Events.fire(new SectorLaunchEvent(sector));
         Events.fire(Trigger.newGame);
         reloader.end();

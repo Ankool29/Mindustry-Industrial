@@ -42,7 +42,10 @@ public class LaunchLoadoutDialog extends BaseDialog{
 
         addCloseListener();
 
+        boolean expansion = IndustrialCampaign.strict(destination.planet);
+        if(expansion) IndustrialExpansion.recover(destination.planet);
         ItemSeq sitems = sector.items();
+        ItemSeq surcharge = IndustrialExpansion.surcharge(destination);
 
         //hide nonsensical items
         ItemSeq launch = universe.getLaunchResources();
@@ -79,7 +82,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
 
             }else if(getMax()){
                 for(Item item : content.items()){
-                    resources.set(item, Mathf.clamp(sitems.get(item) - schems.get(item), 0, capacity));
+                    resources.set(item, Mathf.clamp(sitems.get(item) - schems.get(item) - surcharge.get(item), 0, capacity));
                 }
             }
 
@@ -88,6 +91,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
             total.clear();
             selected.requirements().each(total::add);
             universe.getLaunchResources().each(total::add);
+            surcharge.each(total::add);
             valid = sitems.has(total) || PlanetDialog.debugSelect;
         };
 
@@ -99,9 +103,22 @@ public class LaunchLoadoutDialog extends BaseDialog{
             ItemSeq launches = universe.getLaunchResources();
 
             for(ItemStack s : total){
-                int as = schems.get(s.item), al = launches.get(s.item);
+                int as = schems.get(s.item), al = launches.get(s.item), fee = surcharge.get(s.item);
 
-                if(as + al == 0) continue;
+                if(as + al + fee == 0) continue;
+                if(expansion){
+                    table.table(card -> {
+                        card.image(s.item.uiIcon).size(iconSmall).padRight(8);
+                        card.add(s.item.localizedName).left().growX();
+                        card.row();
+                        card.add(Core.bundle.format("industrial.expansion.breakdown", as, al, fee)).colspan(2).left().wrap().growX();
+                        card.row();
+                        card.add(Core.bundle.format("industrial.expansion.balance", s.amount, sitems.get(s.item)))
+                            .color(sitems.has(s.item, s.amount) ? arc.graphics.Color.white : arc.graphics.Color.scarlet)
+                            .colspan(2).left().wrap().growX();
+                    }).growX().pad(6).row();
+                    continue;
+                }
 
                 table.image(s.item.uiIcon).left().size(iconSmall);
 
@@ -134,6 +151,10 @@ public class LaunchLoadoutDialog extends BaseDialog{
 
                 ItemSeq realItems = sitems.copy();
                 selected.requirements().each(realItems::remove);
+                if(expansion){
+                    surcharge.each(realItems::remove);
+                    realItems.checkNegative();
+                }
 
                 loadout.show(lastCapacity, realItems, out, i -> (IndustrialCampaign.isPlanet(sector.planet) || i.unlocked()) && i.isOnPlanet(sector.planet), out::clear, () -> {}, () -> {
                     universe.updateLaunchResources(new ItemSeq(out));
@@ -148,9 +169,25 @@ public class LaunchLoadoutDialog extends BaseDialog{
         if(rows) buttons.row();
 
         var cell = buttons.button("@launch.text", Icon.ok, () -> {
-            universe.updateLoadout(core, selected);
-            confirm.run();
-            hide();
+            if(!expansion){
+                universe.updateLoadout(core, selected);
+                confirm.run();
+                hide();
+                return;
+            }
+            try{
+                // Revalidate actual source stock at confirmation; the dialog may have remained open.
+                if(expansion && !sector.items().has(total)){
+                    sitems.clear(); sector.items().each(sitems::add);
+                    update.run(); rebuildItems.run(); return;
+                }
+                universe.updateLoadout(core, selected);
+                confirm.run();
+                hide();
+            }catch(Throwable failure){
+                Log.err(failure);
+                ui.showException(Core.bundle.get("industrial.expansion.error"), failure);
+            }
         }).name("launch-sector-confirm").disabled(b -> !valid);
 
         if(rows){
@@ -164,6 +201,12 @@ public class LaunchLoadoutDialog extends BaseDialog{
         if(IndustrialCampaign.strict(destination.planet) && selected.tiles.contains(tile -> !IndustrialResearch.available(tile.block, destination.planet))) selected = mindustry.content.Loadouts.basicShard;
 
         cont.add(Core.bundle.format("launch.from", sector.name())).row();
+        if(expansion){
+            var ledger = IndustrialExpansion.ledger(destination.planet);
+            cont.add(Core.bundle.format("industrial.expansion.destination", destination.name())).name("industrial-expansion-destination").wrap().growX().row();
+            cont.add(Core.bundle.format("industrial.expansion.counter", ledger.established + 1)).wrap().growX().row();
+            if(ledger.grandfathered > 0) cont.add("@industrial.expansion.legacy").wrap().growX().pad(4).row();
+        }
 
         if(destination.allowLaunchSchematics()){
             cont.pane(t -> {
@@ -213,7 +256,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
             }).pad(10f).grow().row();
         }
 
-        cont.pane(items);
+        if(expansion){cont.pane(items).growX().scrollX(false);}else{cont.pane(items);}
         cont.row();
         cont.add("@sector.missingresources").visible(() -> !valid);
 
