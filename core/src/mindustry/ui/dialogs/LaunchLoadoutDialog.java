@@ -145,7 +145,7 @@ public class LaunchLoadoutDialog extends BaseDialog{
                 rebuildItems.run();
             }).checked(b -> getMax());
 
-            buttons.button("@resources", Icon.edit, () -> {
+            buttons.button(expansion ? "@industrial.expansion.cargo" : "@resources", Icon.edit, () -> {
                 ItemSeq stacks = universe.getLaunchResources();
                 Seq<ItemStack> out = stacks.toSeq();
 
