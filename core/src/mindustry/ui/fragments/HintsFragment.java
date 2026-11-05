@@ -361,6 +361,7 @@ public class HintsFragment{
 
         @Override
         public boolean show(){
+            if(IndustrialContent.active() && (this == desktopShoot || this == guardian || this == waveFire || this == presetLaunch || this == presetDifficulty)) return false;
             return shown.get() && (dependencies.length == 0 || !Structs.contains(dependencies, d -> !d.finished()));
         }
 

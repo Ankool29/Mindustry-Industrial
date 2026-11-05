@@ -5,6 +5,7 @@ import mindustry.game.*;
 import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.ui.fragments.HintsFragment.DefaultHint;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
@@ -40,6 +41,9 @@ class IndustrialContentTests{
         for(var block : new Block[]{Blocks.forceProjector, Blocks.shockMine, Blocks.shockwaveTower}) assertFalse(IndustrialContent.visible(block), block.name);
         assertFalse(IndustrialContent.visible(Stat.weapons));
         assertFalse(IndustrialContent.visible(Stat.ammo));
+        for(var hint : new DefaultHint[]{DefaultHint.desktopShoot, DefaultHint.guardian, DefaultHint.waveFire, DefaultHint.presetLaunch, DefaultHint.presetDifficulty}){
+            assertFalse(hint.show(), hint.name());
+        }
         logic.reset();
         state.rules.sector = Planets.serpulo.getStartSector();
         for(var block : content.blocks()) assertTrue(IndustrialContent.visible(block), block.name);
@@ -47,6 +51,8 @@ class IndustrialContentTests{
         assertTrue(IndustrialContent.visible(Stat.weapons));
         assertTrue(IndustrialContent.visible(Stat.ammo));
         assertTrue(Planets.serpulo.allowWaves);
+        state.rules.sector = Planets.serpulo.sectors.find(s -> s.preset == null);
+        assertTrue(DefaultHint.presetLaunch.show(), "Classic campaign advice remains available");
         Seq<mindustry.ctype.UnlockableContent> choices = new Seq<>();
         Blocks.airFactory.getPlanConfigs(choices);
         assertTrue(choices.contains(UnitTypes.flare));
