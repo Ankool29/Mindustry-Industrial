@@ -1,16 +1,18 @@
-## Mindustry Industrial — interface industrielle Android (Mission 5)
+## Mindustry Industrial — recherche indépendante Android (Mission 6B)
 
-La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, propose **Serpulo industrielle** et son mode sans combat. M5 masque les contenus exclusivement militaires dans les menus industriels et ajoute un catalogue civil consultatif. Machines, ressources à usage mixte, recettes, progression des secteurs et sauvegardes restent conservés ; les campagnes classiques gardent leur interface complète.
+La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, dispose désormais d’un état de recherche industriel séparé : technologies étudiées, découvertes et paiements partiels. Les machines restent partagées avec Mindustry et les données classiques sont préservées.
 
-**[Télécharger l’APK M5 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41978301897/artifacts/13392802390)** — [rapport de validation, captures et installation](MISSION_5_VALIDATION.md). **353 tests réussis**, compilation Android réelle, contrôles graphiques industriels et classiques. Installer par-dessus M3/M4 **sans désinstallation**.
+**[Télécharger l’APK M6B et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41983683363/artifacts/13395341877)** — [rapport des modifications, tests et captures](MISSION_6B_VALIDATION.md). **359 tests réussis**, compilation Android réelle et persistance vérifiée sur deux démarrages distincts du client. Installer par-dessus M3/M4/M5 **sans désinstallation**.
 
-Accès : **Jouer → Campagne → Serpulo industrielle**, puis **Machines** pour consulter le catalogue filtré. Le mode Industriel sur carte personnalisée dispose du même filtre de construction. L’arbre technologique classique reste disponible dans la campagne classique ; l’arbre industriel progressif reste à développer.
+**Aucune restriction nouvelle :** toutes les technologies restent accessibles en industriel, le catalogue **Machines** est conservé, aucun paiement de recherche n’est déclenché par l’interface, aucun coût de colonisation ni verrou de secteur n’est ajouté. La simulation des secteurs non visités reste celle de M5. L’arbre technique préparé n’est pas encore exposé au joueur.
 
-Historique : [Mission 4 — campagne planétaire](MISSION_4_VALIDATION.md) · [Mission 3 — mode Industriel](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
+Accès inchangé : **Jouer → Campagne → Serpulo industrielle → Machines**. Les campagnes classiques et le mode Industriel sur carte personnalisée restent disponibles.
+
+Historique : [Mission 5 — interface industrielle](MISSION_5_VALIDATION.md) · [Mission 4 — campagne planétaire](MISSION_4_VALIDATION.md) · [Mission 3 — mode Industriel](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
 
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
 
-[Guide Android : installation, campagne et limites](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
+[Guide Android : installation, sauvegardes et limites](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
 
 ---
 
