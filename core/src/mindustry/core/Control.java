@@ -446,7 +446,7 @@ public class Control implements ApplicationListener, Loadable{
             if(pending != null && pending.destination == sector.id){
                 // Freeze production, construction and offline turns during the short load delay.
                 industrialDeparture = true;
-                state.set(State.paused);
+                if(state.isGame()) state.set(State.paused);
             }
         }
         ui.loadAnd(() -> {
