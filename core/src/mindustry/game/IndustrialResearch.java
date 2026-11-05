@@ -197,6 +197,8 @@ public final class IndustrialResearch{
             parent(Blocks.graphitePress, Blocks.coreShard);
             parent(Blocks.combustionGenerator, Blocks.coreShard);
             parent(Blocks.microProcessor, Blocks.coreShard);
+            parent(Blocks.pneumaticDrill, Blocks.mechanicalDrill);
+            nodes.get(Blocks.pneumaticDrill).objectives.add(new Researched(Blocks.graphitePress, planet));
             parent(Blocks.siliconSmelter, Blocks.graphitePress);
             parent(Blocks.kiln, Blocks.graphitePress);
             parent(Blocks.pulverizer, Blocks.combustionGenerator);

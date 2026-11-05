@@ -177,6 +177,7 @@ class IndustrialProgressionTests{
         var canonical=Blocks.siliconSmelter.techNode;int count=TechTree.all.size,roots=TechTree.roots.size;
         var tree=IndustrialResearch.tree(strict);
         assertSame(canonical,Blocks.siliconSmelter.techNode);assertEquals(count,TechTree.all.size);assertEquals(roots,TechTree.roots.size);
+        assertSame(Blocks.mechanicalDrill,tree.nodes.get(Blocks.pneumaticDrill).parent.content);
         assertSame(Blocks.combustionGenerator,tree.nodes.get(Blocks.pulverizer).parent.content);
         assertSame(Blocks.kiln,tree.nodes.get(Blocks.waterExtractor).parent.content);
         assertSame(Blocks.mechanicalPump,tree.nodes.get(Blocks.cryofluidMixer).parent.content);

@@ -57,10 +57,14 @@ public class IndustrialResearchDetailsDialog extends BaseDialog{
         if(node.content.description != null) body.add(node.content.description).wrap().color(arc.graphics.Color.lightGray).row();
         if(node.parent instanceof IndustrialNode parent){
             body.add("@industrial.research.parent").color(Pal.accent).row();
+            if(!free && !IndustrialResearch.unlocked(parent.content, node.planet)) body.add("@industrial.research.parent.missing").wrap().color(Pal.remove).row();
             body.button(parent.content.localizedName, () -> open(parent)).minHeight(48).row();
         }
         for(var objective : node.objectives){
-            body.add((objective.complete() ? "[green]✓[] " : "[scarlet]×[] ") + objective.display()).wrap().row();
+            body.table(row -> {
+                row.image(objective.complete() ? Icon.ok : Icon.cancel).size(20).padRight(8).color(objective.complete() ? Pal.accent : Pal.remove);
+                row.add(objective.display()).growX().wrap();
+            }).row();
         }
         var items = IndustrialResearch.availableItems(node.planet);
         if(node.requirements.length > 0){

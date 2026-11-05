@@ -776,7 +776,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                     if(planet.solarSystem == star && selectable(planet)){
                         Button planetButton = planetTable.button(planet.localizedName, Icon.icons.get(planet.icon + "Small", Icon.icons.get(planet.icon, Icon.commandRallySmall)), Styles.flatTogglet, () -> {
                             viewPlanet(planet, false);
-                        }).width(200).height(40).update(bb -> bb.setChecked(state.planet == planet)).with(w -> w.marginLeft(10f)).get();
+                        }).name("planet-" + planet.name).width(200).height(IndustrialCampaign.strict(planet) ? 72 : 40).update(bb -> bb.setChecked(state.planet == planet)).with(w -> w.marginLeft(10f)).get();
                         planetButton.getChildren().get(1).setColor(planet.iconColor);
                         planetButton.setColor(planet.iconColor);
                         planetTable.background(Tex.pane).row();

@@ -15,6 +15,7 @@ import static mindustry.Vars.*;
 
 /** Displays a list of items, e.g. launched items.*/
 public class ItemsDisplay extends Table{
+    public String title = "@globalitems";
     boolean collapsed;
 
     public ItemsDisplay(){
@@ -57,7 +58,7 @@ public class ItemsDisplay extends Table{
 
             col.setCollapsed(collapsed, false);
 
-            c.button("@globalitems", Icon.downOpen, Styles.flatTogglet, col::toggle).update(t -> {
+            c.button(title, Icon.downOpen, Styles.flatTogglet, col::toggle).update(t -> {
                 t.setChecked(col.isCollapsed());
                 collapsed = col.isCollapsed();
                 ((Image)t.getChildren().get(1)).setDrawable(col.isCollapsed() ? Icon.upOpen : Icon.downOpen);

@@ -58,8 +58,8 @@ public class ResearchDialog extends BaseDialog{
             float width = Math.min(150f, (Core.graphics.getWidth() / Scl.scl(1f) - 24f) / 3f);
             buttons.defaults().size(width, 54f);
             buttons.button("@back", Icon.left, this::hide);
-            buttons.button("@industrial.catalog.short", Icon.book, () -> new IndustrialCatalogDialog().show()).name("research-catalogue");
-            buttons.button("@industrial.research.list", Icon.list, this::showIndustrialList).name("research-list");
+            buttons.button("@industrial.catalog.short", () -> new IndustrialCatalogDialog().show()).name("research-catalogue");
+            buttons.button("@industrial.research.list", this::showIndustrialList).name("research-list");
         }else{
             buttons.defaults().size(210f, 64f);
             buttons.button("@back", Icon.left, this::hide);
@@ -162,7 +162,7 @@ public class ResearchDialog extends BaseDialog{
 
         shouldPause = true;
 
-        onResize(this::checkMargin);
+        onResize(() -> { checkMargin(); if(industrialPlanet != null) rebuildButtons(); });
 
         shown(() -> {
             checkMargin();
@@ -258,10 +258,12 @@ public class ResearchDialog extends BaseDialog{
 
     public void rebuildItems(){
         if(industrialPlanet != null){
+            itemDisplay.title = "@industrial.research.stock";
             items = IndustrialResearch.availableItems(industrialPlanet);
             itemDisplay.rebuild(items);
             return;
         }
+        itemDisplay.title = "@globalitems";
         items = new ItemSeq(){
             //store sector item amounts for modifications
             ObjectMap<Sector, ItemSeq> cache = new ObjectMap<>();
