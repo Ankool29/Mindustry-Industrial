@@ -56,6 +56,14 @@ class IndustrialExpansionTests{
         logic.reset();Core.settings=settings();for(var s:strict.sectors)s.loadInfo();
     }
 
+    @Test void freshCampaignFirstLandingSetsCounterWithoutCharging(){
+        assertEquals(0,IndustrialExpansion.ledger(strict).established);
+        assertEquals(0,IndustrialExpansion.ledger(strict).grandfathered);
+        destination=source;land();IndustrialExpansion.established(source);
+        assertEquals(1,IndustrialExpansion.ledger(strict).established);
+        assertNull(IndustrialExpansion.ledger(strict).pending);
+        restart();assertEquals(1,IndustrialExpansion.ledger(strict).established);
+    }
     @Test void proposedPricesAndCapsAreExactAndConfigurable(){
         Policy p=new Policy();
         for(int[] v:new int[][]{{0,0,0},{1,0,0},{2,250,200},{3,500,400},{4,750,600},{9,2000,1600},{100,2000,1600},{Integer.MAX_VALUE,2000,1600}}){
