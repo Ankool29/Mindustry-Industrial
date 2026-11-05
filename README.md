@@ -1,10 +1,12 @@
-## Mindustry Industrial — campagne planétaire Android (Mission 4)
+## Mindustry Industrial — interface industrielle Android (Mission 5)
 
-La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, ajoute **Serpulo industrielle** : plusieurs secteurs à développer sans ennemis, vagues ni conquête militaire, avec ressources et coûts normaux. Les campagnes classiques et le mode Industriel sur carte personnalisée sont conservés.
+La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, propose **Serpulo industrielle** et son mode sans combat. M5 masque les contenus exclusivement militaires dans les menus industriels et ajoute un catalogue civil consultatif. Machines, ressources à usage mixte, recettes, progression des secteurs et sauvegardes restent conservés ; les campagnes classiques gardent leur interface complète.
 
-**[Télécharger l’APK M4 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41896356479/artifacts/13357580159)** — [rapport, captures et validation](MISSION_4_VALIDATION.md). **348 tests réussis** et compilation Android réelle. Installer par-dessus M3, **sans désinstallation**, puis **Jouer → Campagne → Serpulo industrielle → secteur 170**. Produire les ressources du déploiement pour ouvrir les secteurs voisins.
+**[Télécharger l’APK M5 et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41978301897/artifacts/13392802390)** — [rapport de validation, captures et installation](MISSION_5_VALIDATION.md). **353 tests réussis**, compilation Android réelle, contrôles graphiques industriels et classiques. Installer par-dessus M3/M4 **sans désinstallation**.
 
-Historique : [Mission 3 — mode Industriel sur carte isolée](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
+Accès : **Jouer → Campagne → Serpulo industrielle**, puis **Machines** pour consulter le catalogue filtré. Le mode Industriel sur carte personnalisée dispose du même filtre de construction. L’arbre technologique classique reste disponible dans la campagne classique ; l’arbre industriel progressif reste à développer.
+
+Historique : [Mission 4 — campagne planétaire](MISSION_4_VALIDATION.md) · [Mission 3 — mode Industriel](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
 
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
 
