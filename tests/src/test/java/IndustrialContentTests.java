@@ -74,6 +74,8 @@ class IndustrialContentTests{
         assertSame(UnitTypes.mono, fresh.unit(), "New industrial factories must default to a visible civilian plan");
         choices.clear();
         state.rules.sector = null; // Inspect Erekir payload choices in an industrial custom game.
+        state.rules.planet = Planets.erekir;
+        state.rules.env = Planets.erekir.defaultEnv;
         Blocks.constructor.getPlanConfigs(choices);
         assertFalse(choices.contains(Blocks.tungstenWallLarge));
         assertTrue(choices.contains(Blocks.beamNode));
