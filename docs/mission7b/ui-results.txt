@@ -1,0 +1,13 @@
+mission7b-ui-first.log
+[I] M7B_UI_M6D_STOCK_UNKNOWN_AGE_READONLY_SINGLETON_OK
+[I] M7B_UI_ACTIVE_MATERIAL_PLATFORM_AND_REFRESH_READONLY_OK
+[I] M7B_UI_OTHER_CAMPAIGNS_PRESERVED_OK
+[I] Saved on exit.
+mission7b-ui-second.log
+[I] M7B_UI_RESTART_M6D_DATA_AND_UNKNOWN_AGE_OK
+mission7b-ui-perf.log
+[I] M7B_UI_PERF N=5 create_validate_p50_ms=3.360 p95_ms=22.700 median_allocation_KiB=80.0
+[I] M7B_UI_PERF N=20 create_validate_p50_ms=2.990 p95_ms=6.940 median_allocation_KiB=200.0
+[I] M7B_UI_PERF N=50 create_validate_p50_ms=2.530 p95_ms=7.970 median_allocation_KiB=300.0
+[I] M7B_UI_PERF N=100 create_validate_p50_ms=4.790 p95_ms=7.320 median_allocation_KiB=700.0
+[I] M7B_PERF_ALL_PORTRAIT_SIZES_OK

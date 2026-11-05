@@ -1,0 +1,6 @@
+First complete graphical series (same production code, before delayed screenshot capture):
+N=5 median_ms=3.300 p95_ms=8.590 median_allocation_KiB=80.0
+N=20 median_ms=4.950 p95_ms=51.000 median_allocation_KiB=200.0
+N=50 median_ms=4.950 p95_ms=154.000 median_allocation_KiB=300.0
+N=100 median_ms=8.020 p95_ms=146.000 median_allocation_KiB=700.0
+Cloud/Xvfb/Rhino measurements, not Android results.

@@ -1,16 +1,16 @@
-## Mindustry Industrial — colonisation progressive Android (Mission 6D)
+## Mindustry Industrial — diagnostic économique Android (Mission 7B)
 
-**[Télécharger l’APK M6D et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42031564912/artifacts/13416407991)** · **[Rapport, tests, captures et procédure sûre](MISSION_6D_VALIDATION.md)**.
+**[Télécharger l’APK M7B et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42072442237/artifacts/13435874229)** · **[Rapport, tests, mesures et procédure téléphone](MISSION_7B_VALIDATION.md)**.
 
-Dans **Serpulo industrielle — progression**, le schéma du noyau et le chargement gardent leurs coûts natifs. À partir de la troisième implantation économique : +250 cuivre/200 plomb par palier, jusqu’à +2000/1600. Le devis détaille chaque coût et le stock source. Un journal reprend les paiements interrompus après sauvegarde de la destination, sans double débit.
+Dans **Serpulo industrielle — progression**, ouvrir la carte planétaire, sélectionner un secteur puis **Diagnostic économique** : colonies, stocks, moyennes natives, origine observée/estimée, ancienneté et détails des plateformes du monde actif. Le prélèvement net est distingué de la consommation totale non mesurée ; les moyennes ne sont pas des quantités livrées.
 
-**Les choix de secteurs M6C sont conservés exactement**, y compris les six voisins de 170. Les bases et recherches M6C sont préservées, sans frais rétroactifs ; leur nouvelle économie commence au compteur 1. Les visites sont gratuites. Une réimplantation après abandon compte comme un nouveau déploiement. Serpulo classique et la campagne industrielle libre gardent leurs règles.
+**Lecture seule :** aucun nouveau moteur économique, aucune modification des recettes, transports, recherches, coûts M6D ou règles de voisinage. Les campagnes classique et industrielle libre restent préservées. Aucune production application fermée ni cargaison fictive en transit. La mission 7C n’est pas commencée.
 
-**385 tests réussis**, compilation GitHub Actions verte, signature précédente et alignement Android 16 Kio vérifiés. Les contrôles graphiques et de redémarrage utilisent des copies isolées ; l’essai physique du nouvel APK reste à confirmer sur S25 Ultra.
+**397 tests réussis**, compilation GitHub Actions verte, signature précédente et alignement Android 16 Kio vérifiés. Les comparaisons d’usine et contrôles graphiques utilisent des données isolées ; les performances cloud ne sont pas des mesures Android. L’essai physique du nouvel APK reste à confirmer sur S25 Ultra.
 
-Installer par-dessus M6C **sans désinstallation**. Aucun effacement de données n’est nécessaire. Les recherches M6C et le catalogue restent disponibles. Les limites du journal face à une corruption de fichiers et la procédure de test sont documentées dans le rapport.
+Installer par-dessus M6D **sans désinstallation**, sans effacement ni conversion de sauvegardes. La dernière mesure est inconnue après redémarrage, puis datée en mémoire pendant la session : les stocks et recherches ne sont pas réinitialisés.
 
-Historique : [Mission 6C](MISSION_6C_VALIDATION.md) · [Mission 6B](MISSION_6B_VALIDATION.md) · [Mission 5](MISSION_5_VALIDATION.md) · [Mission 4](MISSION_4_VALIDATION.md) · [Mission 3](MISSION_3_VALIDATION.md) · [Mission 2](MISSION_2_VALIDATION.md).
+Historique : [Audit 7A](MISSION_7A_AUDIT.md) · [Mission 6D](MISSION_6D_VALIDATION.md) · [Mission 6C](MISSION_6C_VALIDATION.md) · [Mission 6B](MISSION_6B_VALIDATION.md) · [Mission 5](MISSION_5_VALIDATION.md) · [Mission 4](MISSION_4_VALIDATION.md) · [Mission 3](MISSION_3_VALIDATION.md) · [Mission 2](MISSION_2_VALIDATION.md).
 
 Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile la branche `industrial-android`, même si le sélecteur affiche `master`.
 

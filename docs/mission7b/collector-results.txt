@@ -1,0 +1,8 @@
+META java=17.0.21 arch=amd64 items=22
+READ inactive N=5 p50_ms=0.0268 p95_ms=0.0698 cpu_ms=0.0369 allocation_KiB=8.52 rows=60 pads=0 unchanged_metadata=true settings_modified=false
+READ inactive N=20 p50_ms=0.0541 p95_ms=0.1507 cpu_ms=0.0700 allocation_KiB=31.97 rows=240 pads=0 unchanged_metadata=true settings_modified=false
+READ inactive N=50 p50_ms=0.1322 p95_ms=0.3652 cpu_ms=0.1649 allocation_KiB=79.17 rows=600 pads=0 unchanged_metadata=true settings_modified=false
+READ inactive N=100 p50_ms=0.3787 p95_ms=1.6428 cpu_ms=0.4282 allocation_KiB=158.53 rows=1200 pads=0 unchanged_metadata=true settings_modified=false
+ACTIVE_BUILDINGS 5001
+READ one_active_5000_conveyors N=100 p50_ms=0.3853 p95_ms=1.2111 cpu_ms=0.4476 allocation_KiB=158.53 rows=1200 pads=0 unchanged_metadata=true settings_modified=false
+CLOSED mark_cpu_ns=57.47 bytes_per_mark=0.0001 settings_modified=false
