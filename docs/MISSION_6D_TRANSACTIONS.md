@@ -25,3 +25,7 @@ Les paramètres natifs Arc ne garantissent pas un remplacement atomique/fsync de
 ## Ressources pendant le départ
 
 Le départ strict utilise directement l'écran de chargement, sans animation de décollage de la source. Une pause transitoire empêche production, construction et tours hors écran de consommer le stock validé pendant le délai de chargement. La pause est levée par le démarrage natif du monde destination ; la garde de chargement est libérée même si le chargement échoue. Les autres campagnes gardent leur animation et leur simulation normales. Cela évite une réservation avec remboursement potentiellement impossible si la production avait rempli les noyaux entre-temps.
+
+## Perte volontaire de toutes les bases
+
+Un atterrissage initial sans source reçoit aussi un identifiant, pour être comptabilisé une seule fois. Le raccourci natif de retour au secteur initial ne donne pas de noyau gratuit tant qu'une autre base subsiste : il faut une source voisine finançable. Si toutes les bases ont disparu, une confirmation explicite permet la reprise native au secteur initial, sans source à débiter ; recherches et compteur sont conservés, et cette nouvelle implantation augmente le compteur. Ce secours ne choisit pas de secteur lointain et ne baisse jamais les tarifs futurs. Les choix de carte restent calculés par les mêmes fonctions M6C.

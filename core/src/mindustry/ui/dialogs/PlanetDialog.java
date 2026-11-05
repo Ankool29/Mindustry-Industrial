@@ -1431,10 +1431,21 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
             Sector from = findLauncher(sector);
 
             if(from == null){
-                //clear loadout information, so only the basic loadout gets used
-                universe.clearLoadoutInfo();
-                //free launch.
-                control.playSector(sector);
+                Runnable firstLanding = () -> {
+                    //clear loadout information, so only the basic loadout gets used
+                    universe.clearLoadoutInfo();
+                    control.playSector(sector);
+                };
+                if(IndustrialCampaign.strict(sector.planet) && IndustrialExpansion.ledger(sector.planet).established > 0){
+                    if(IndustrialExpansion.canRecoverWithoutSource(sector)){
+                        // Preserve native recovery only when no base can finance a launch.
+                        ui.showConfirm("@industrial.expansion.recovery", firstLanding);
+                    }else{
+                        ui.showInfo("@industrial.expansion.nosource");
+                    }
+                }else{
+                    firstLanding.run();
+                }
             }else{
                 CoreBlock block = sector.allowLaunchSchematics() ? (from.info.bestCoreType instanceof CoreBlock b ? b : (CoreBlock)from.planet.defaultCore) : (CoreBlock)from.planet.defaultCore;
 

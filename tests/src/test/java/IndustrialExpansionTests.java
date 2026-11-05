@@ -64,6 +64,21 @@ class IndustrialExpansionTests{
         assertNull(IndustrialExpansion.ledger(strict).pending);
         restart();assertEquals(1,IndustrialExpansion.ledger(strict).established);
     }
+    @Test void recoveryAfterAllBasesAbandonedKeepsAndIncreasesCounterOnce(){
+        base(source);count(4);assertFalse(IndustrialExpansion.canRecoverWithoutSource(source));
+        source.info.hasCore=false;
+        assertTrue(IndustrialExpansion.canRecoverWithoutSource(source));
+        assertFalse(IndustrialExpansion.canRecoverWithoutSource(destination));
+        destination=source;land();IndustrialExpansion.established(source);IndustrialExpansion.established(source);
+        assertEquals(5,IndustrialExpansion.ledger(strict).established);
+        assertEquals(1000,new Policy().surcharge(5).get(Items.copper));
+        restart();assertEquals(5,IndustrialExpansion.ledger(strict).established);
+    }
+    @Test void initialSectorCannotBypassCostsWhileAnotherBaseSurvives(){
+        base(destination);count(4);assertFalse(IndustrialExpansion.canRecoverWithoutSource(source));
+        assertTrue(IndustrialCampaign.canExplore(source));
+        assertFalse(IndustrialExpansion.canRecoverWithoutSource(Planets.industrialSerpulo.getStartSector()));
+    }
     @Test void proposedPricesAndCapsAreExactAndConfigurable(){
         Policy p=new Policy();
         for(int[] v:new int[][]{{0,0,0},{1,0,0},{2,250,200},{3,500,400},{4,750,600},{9,2000,1600},{100,2000,1600},{Integer.MAX_VALUE,2000,1600}}){

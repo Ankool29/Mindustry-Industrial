@@ -36,6 +36,7 @@ public final class IndustrialExpansion{
     public static class Ledger{
         public int version = 1, established, grandfathered;
         public Policy policy = new Policy();
+        public @Nullable String lastLanding;
         public @Nullable Journal pending;
     }
 
@@ -56,6 +57,11 @@ public final class IndustrialExpansion{
         Core.settings.putJson(key(planet), ledger);
         // Unlike forceSave, propagate I/O errors even when a global error handler is installed.
         Core.settings.saveValues();
+    }
+
+    public static boolean canRecoverWithoutSource(Sector destination){
+        return IndustrialCampaign.strict(destination.planet) && destination.id == destination.planet.startSector &&
+            !destination.planet.sectors.contains(Sector::hasBase);
     }
 
     public static ItemSeq surcharge(Sector destination){
@@ -90,9 +96,8 @@ public final class IndustrialExpansion{
     public static void stamp(Sector destination){
         if(!IndustrialCampaign.strict(destination.planet)) return;
         Ledger ledger = ledger(destination.planet);
-        if(ledger.pending != null && ledger.pending.destination == destination.id){
-            state.rules.tags.put(marker, ledger.pending.id);
-        }
+        state.rules.tags.put(marker, ledger.pending != null && ledger.pending.destination == destination.id ?
+            ledger.pending.id : UUID.randomUUID().toString());
     }
 
     private static boolean landed(Planet planet, Journal journal){
@@ -116,15 +121,17 @@ public final class IndustrialExpansion{
         ItemSeq previous = source.info.items.copy();
         if(!previous.has(journal.total)) throw new IllegalStateException("Industrial launch stock mismatch; journal retained");
         int oldCount = ledger.established;
+        String previousLanding = ledger.lastLanding;
         try{
             journal.total.each(source.info.items::remove);
             source.saveInfo();
             if(ledger.established < Integer.MAX_VALUE) ledger.established ++;
+            ledger.lastLanding = journal.id;
             ledger.pending = null;
             persist(planet, ledger);
         }catch(Throwable failure){
             source.info.items = previous; source.saveInfo();
-            ledger.established = oldCount; ledger.pending = journal;
+            ledger.established = oldCount; ledger.lastLanding = previousLanding; ledger.pending = journal;
             Core.settings.putJson(key(planet), ledger);
             throw failure;
         }
@@ -134,8 +141,15 @@ public final class IndustrialExpansion{
     public static void established(Sector destination){
         if(!IndustrialCampaign.strict(destination.planet)) return;
         Ledger ledger = ledger(destination.planet);
-        if(ledger.pending != null){recover(destination.planet);}else if(ledger.established == 0){
-            ledger.established = 1; persist(destination.planet, ledger);
+        if(ledger.pending != null){
+            recover(destination.planet);
+        }else{
+            String landing = state.rules.tags.get(marker);
+            if(landing != null && !landing.equals(ledger.lastLanding)){
+                if(ledger.established < Integer.MAX_VALUE) ledger.established ++;
+                ledger.lastLanding = landing;
+                persist(destination.planet, ledger);
+            }
         }
     }
 }
