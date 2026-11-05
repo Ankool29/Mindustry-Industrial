@@ -4,8 +4,14 @@ import mindustry.game.*;
 
 /** A separately saved peaceful campaign, using an existing planet generator. */
 public class IndustrialPlanet extends Planet{
+    public final boolean strictResearch;
     public IndustrialPlanet(String name, Planet parent, float radius, int sectorSize){
+        this(name, parent, radius, sectorSize, false);
+    }
+
+    public IndustrialPlanet(String name, Planet parent, float radius, int sectorSize, boolean strictResearch){
         super(name, parent, radius, sectorSize);
+        this.strictResearch = strictResearch;
         alwaysUnlocked = true;
         autoAssignPlanet = false;
         allowCampaignRules = false;

@@ -205,6 +205,8 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                 choicesTable.row();
                 choicesTable.button("@campaign.industrial", Icon.hammer, Styles.togglet, () -> selected[0] = Planets.industrialSerpulo)
                     .group(group).size(440f, 60f).colspan(2).name("industrial-campaign-choice").row();
+                choicesTable.button("@campaign.industrial.progressive", Icon.tree, Styles.togglet, () -> selected[0] = Planets.industrialSerpuloProgressive)
+                    .group(group).size(440f, 60f).colspan(2).name("industrial-progressive-choice").row();
                 choicesTable.label(() -> selected[0] == null ? "@campaign.none" : "@campaign." + selected[0].name).labelAlign(Align.center).style(Styles.outlineLabel).width(440f).wrap().colspan(2);
                 ScrollPane choicesPane = new ScrollPane(choicesTable);
                 choicesPane.setScrollingDisabled(true, false);
@@ -330,7 +332,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
 
     void addTech(){
         buttons.button("@techtree", Icon.tree, () -> ui.research.show()).size(200f, 54f).visible(() -> mode == look)
-            .update(b -> b.setText(Core.bundle.get(IndustrialCampaign.isPlanet(state.planet) ? "industrial.catalog" : "techtree"))).pad(2).bottom();
+            .update(b -> b.setText(Core.bundle.get(IndustrialCampaign.isPlanet(state.planet) ? "industrial.research.title" : "techtree"))).pad(2).bottom();
     }
 
     public void showOverview(){
@@ -1385,6 +1387,19 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
     }
 
     void playSelected(){
+        if(selected == null) return;
+        if(IndustrialCampaign.strict(selected.planet) && !selected.hasSave() && !selected.planet.sectors.contains(Sector::hasSave)){
+            Sector destination = selected;
+            ui.showConfirm("@industrial.progressive.confirm", () -> {
+                selected = destination;
+                playSelectedConfirmed();
+            });
+            return;
+        }
+        playSelectedConfirmed();
+    }
+
+    void playSelectedConfirmed(){
         if(selected == null) return;
 
         Sector sector = selected;

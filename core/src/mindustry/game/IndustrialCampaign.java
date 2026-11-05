@@ -13,6 +13,14 @@ public final class IndustrialCampaign{
         return planet instanceof IndustrialPlanet;
     }
 
+    public static boolean strict(Planet planet){
+        return planet instanceof IndustrialPlanet industrial && industrial.strictResearch;
+    }
+
+    public static boolean strict(){
+        return active() && strict(state.rules.sector.planet);
+    }
+
     public static boolean active(){
         return state != null && state.rules.sector != null && isPlanet(state.rules.sector.planet);
     }

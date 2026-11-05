@@ -58,6 +58,7 @@ public class UnitFactory extends UnitBlock{
 
         config(Integer.class, (UnitFactoryBuild build, Integer i) -> {
             if(!configurable) return;
+            if(mindustry.game.IndustrialCampaign.strict() && i >= 0 && i < plans.size && !plans.get(i).unit.unlockedNowHost()) return;
 
             if(build.currentPlan == i) return;
             build.currentPlan = i < 0 || i >= plans.size ? -1 : i;
@@ -69,6 +70,7 @@ public class UnitFactory extends UnitBlock{
 
         config(UnitType.class, (UnitFactoryBuild build, UnitType val) -> {
             if(!configurable) return;
+            if(mindustry.game.IndustrialCampaign.strict() && !val.unlockedNowHost()) return;
 
             int next = plans.indexOf(p -> p.unit == val);
             if(build.currentPlan == next) return;

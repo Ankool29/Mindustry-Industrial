@@ -24,7 +24,8 @@ public class Planets{
     gier,
     notva,
     verilus,
-    industrialSerpulo;
+    industrialSerpulo,
+    industrialSerpuloProgressive;
 
     public static void load(){
         sun = new Planet("sun", null, 4f){{
@@ -178,6 +179,25 @@ public class Planets{
             atmosphereColor = Color.valueOf("3c1b8f");
             iconColor = Color.valueOf("7d4dff");
             icon = "hammer";
+            launchCapacityMultiplier = 0.5f;
+            allowSelfSectorLaunch = true;
+            ruleSetter = r -> {
+                r.waveTeam = Team.crux;
+                r.placeRangeCheck = false;
+                r.hideSpawns = true;
+                r.derelictRepair = true;
+            };
+        }};
+
+        // Separate campaign namespace, appended after every pre-existing planet.
+        industrialSerpuloProgressive = new IndustrialPlanet("industrial-serpulo-progressive", sun, 1f, 3, true){{
+            generator = new SerpuloPlanetGenerator();
+            sectorSeed = 2;
+            startSector = 170;
+            meshLoader = () -> new HexMesh(this, 6);
+            atmosphereColor = Color.valueOf("3c1b8f");
+            iconColor = Color.valueOf("7d4dff");
+            icon = "tree";
             launchCapacityMultiplier = 0.5f;
             allowSelfSectorLaunch = true;
             ruleSetter = r -> {

@@ -279,7 +279,7 @@ public abstract class UnlockableContent extends MappableContent{
     }
 
     public boolean unlockedNowHost(){
-        return IndustrialCampaign.active() || !state.isCampaign() || unlockedHost();
+        return IndustrialCampaign.active() ? IndustrialResearch.available(this, state.rules.sector.planet) : !state.isCampaign() || unlockedHost();
     }
 
     /** @return in multiplayer, whether this is unlocked for the host player, otherwise, whether it is unlocked for the local player (same as unlocked()) */
@@ -291,7 +291,7 @@ public abstract class UnlockableContent extends MappableContent{
 
     /** @return whether this content is unlocked, or the player is in a custom (non-campaign) game. */
     public boolean unlockedNow(){
-        return IndustrialCampaign.active() || unlocked() || !state.isCampaign();
+        return IndustrialCampaign.active() ? IndustrialResearch.available(this, state.rules.sector.planet) : unlocked() || !state.isCampaign();
     }
 
     public boolean unlocked(){

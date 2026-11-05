@@ -59,7 +59,7 @@ public final class IndustrialContent{
     }
 
     public static boolean visible(Schematic schematic){
-        return !filtering() || !schematic.tiles.contains(t -> !industrial(t.block));
+        return !filtering() || !schematic.tiles.contains(t -> !industrial(t.block) || (IndustrialCampaign.strict() && !IndustrialResearch.available(t.block, state.rules.sector.planet)));
     }
 
     public static boolean industrial(Stat stat){

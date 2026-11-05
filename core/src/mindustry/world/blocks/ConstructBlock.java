@@ -276,6 +276,7 @@ public class ConstructBlock extends Block{
         }
 
         public void construct(Unit builder, @Nullable Building core, float amount, Object config){
+            if(mindustry.game.IndustrialCampaign.strict() && current != null && !current.unlockedNowHost()) return;
             if(accumulator == null || totalAccumulator == null) return;
 
             wasConstructing = true;

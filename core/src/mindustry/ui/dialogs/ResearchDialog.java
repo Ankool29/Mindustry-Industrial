@@ -20,6 +20,8 @@ import mindustry.content.TechTree.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.game.IndustrialCampaign;
+import mindustry.game.IndustrialResearch;
+import mindustry.game.IndustrialResearch.IndustrialNode;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -35,13 +37,47 @@ import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class ResearchDialog extends BaseDialog{
+    private Planet industrialPlanet;
+
     @Override
     public Dialog show(){
-        if(IndustrialCampaign.active() || (ui.planet.isShown() && IndustrialCampaign.isPlanet(ui.planet.state.planet))){
-            new IndustrialCatalogDialog().show();
-            return this;
+        Planet selected = ui.planet.isShown() ? ui.planet.state.planet : IndustrialCampaign.active() ? state.rules.sector.planet : null;
+        industrialPlanet = IndustrialCampaign.isPlanet(selected) ? selected : null;
+        if(industrialPlanet != null){
+            rebuildTree(IndustrialResearch.tree(industrialPlanet).root);
+        }else if(lastNode instanceof IndustrialNode){
+            rebuildTree(Planets.serpulo.techTree);
         }
+        rebuildButtons();
         return super.show();
+    }
+
+    private void rebuildButtons(){
+        buttons.clearChildren();
+        if(industrialPlanet != null){
+            float width = Math.min(150f, (Core.graphics.getWidth() / Scl.scl(1f) - 24f) / 3f);
+            buttons.defaults().size(width, 54f);
+            buttons.button("@back", Icon.left, this::hide);
+            buttons.button("@industrial.catalog.short", Icon.book, () -> new IndustrialCatalogDialog().show()).name("research-catalogue");
+            buttons.button("@industrial.research.list", Icon.list, this::showIndustrialList).name("research-list");
+        }else{
+            buttons.defaults().size(210f, 64f);
+            buttons.button("@back", Icon.left, this::hide);
+            buttons.button("@database", Icon.book, () -> { hide(); ui.database.show(); }).name("database");
+        }
+    }
+
+    public void refreshIndustrial(){
+        rebuildItems();
+        for(var node : nodes) if(node.node instanceof IndustrialNode industrial) industrial.refresh();
+        checkNodes(root);
+        treeLayout();
+        view.rebuildAll();
+        if(IndustrialCampaign.active() && state.rules.sector.planet == industrialPlanet && control != null) ui.hudfrag.blockfrag.rebuild();
+    }
+
+    private void showIndustrialList(){
+        new IndustrialResearchListDialog((IndustrialNode)root.node, this::refreshIndustrial).show();
     }
 
     public static boolean debugShowRequirements = false;
@@ -93,6 +129,7 @@ public class ResearchDialog extends BaseDialog{
             b.add().growX();
             b.add().size(iconMed);
         }, () -> {
+            if(industrialPlanet != null) return;
             new BaseDialog("@techtree.select"){{
                 cont.pane(t -> {
                     t.table(Tex.button, in -> {
@@ -115,7 +152,7 @@ public class ResearchDialog extends BaseDialog{
 
                 addCloseButton();
             }}.show();
-        }).visible(() -> showTechSelect = TechTree.roots.count(node -> !(node.requiresUnlock && !node.content.unlockedHost())) > 1).minWidth(300f);
+        }).visible(() -> showTechSelect = industrialPlanet != null || TechTree.roots.count(node -> !(node.requiresUnlock && !node.content.unlockedHost())) > 1).minWidth(300f);
 
         margin(0f).marginBottom(8);
         cont.stack(titleTable, view = new View(), itemDisplay = new ItemsDisplay()).grow();
@@ -135,7 +172,7 @@ public class ResearchDialog extends BaseDialog{
                 ui.planet.state.planet :
                 state.isCampaign() ? state.rules.sector.planet : null;
 
-            if(currPlanet != null && currPlanet.techTree != null){
+            if(industrialPlanet == null && currPlanet != null && currPlanet.techTree != null){
                 switchTree(currPlanet.techTree);
             }
             rebuildItems();
@@ -220,6 +257,11 @@ public class ResearchDialog extends BaseDialog{
     }
 
     public void rebuildItems(){
+        if(industrialPlanet != null){
+            items = IndustrialResearch.availableItems(industrialPlanet);
+            itemDisplay.rebuild(items);
+            return;
+        }
         items = new ItemSeq(){
             //store sector item amounts for modifications
             ObjectMap<Sector, ItemSeq> cache = new ObjectMap<>();
@@ -399,6 +441,13 @@ public class ResearchDialog extends BaseDialog{
     }
 
     void checkNodes(TechTreeNode node){
+        if(node.node instanceof IndustrialNode){
+            node.visible = true;
+            node.selectable = selectable(node.node);
+            for(var child : node.children) checkNodes(child);
+            itemDisplay.rebuild(items);
+            return;
+        }
         boolean locked = locked(node.node);
         if(!locked && (node.parent == null || node.parent.visible)) node.visible = true;
         node.selectable = selectable(node.node);
@@ -412,11 +461,12 @@ public class ResearchDialog extends BaseDialog{
 
     boolean selectable(TechNode node){
         //there's a desync here as far as sectors go, since the client doesn't know about that, but I'm not too concerned
+        if(node instanceof IndustrialNode industrial) return IndustrialResearch.available(node.content, node.planet) || IndustrialResearch.canResearch(industrial);
         return node.content.unlockedHost() || !node.objectives.contains(i -> !i.complete());
     }
 
     boolean locked(TechNode node){
-        return !node.content.unlockedHost();
+        return node instanceof IndustrialNode ? !IndustrialResearch.available(node.content, node.planet) : !node.content.unlockedHost();
     }
 
     class LayoutNode extends TreeNode<LayoutNode>{
@@ -466,12 +516,17 @@ public class ResearchDialog extends BaseDialog{
 
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.uiIcon, Styles.nodei);
+                button.name = "research-node-" + node.node.content.name;
                 button.resizeImage(32f);
                 button.getImage().setScaling(Scaling.fit);
                 button.visible(() -> node.visible);
                 if(!net.client()){
                     button.clicked(() -> {
                         if(moved) return;
+                        if(node.node instanceof IndustrialNode industrial){
+                            new IndustrialResearchDetailsDialog(industrial, ResearchDialog.this::refreshIndustrial).show();
+                            return;
+                        }
 
                         if(mobile){
                             hoverNode = button;
@@ -498,7 +553,7 @@ public class ResearchDialog extends BaseDialog{
                 }
 
                 button.hovered(() -> {
-                    if(!mobile && hoverNode != button && node.visible){
+                    if(!(node.node instanceof IndustrialNode) && !mobile && hoverNode != button && node.visible){
                         hoverNode = button;
                         rebuild();
                     }
@@ -518,7 +573,7 @@ public class ResearchDialog extends BaseDialog{
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
                     button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || (!canSpend(node.node) && !net.client()) ? Tex.buttonRed : Tex.button;
 
-                    ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.selectable ? node.node.content.uiIcon : Icon.lock.getRegion());
+                    ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.selectable || node.node instanceof IndustrialNode ? node.node.content.uiIcon : Icon.lock.getRegion());
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
                     button.getImage().layout();
                 });
@@ -576,6 +631,11 @@ public class ResearchDialog extends BaseDialog{
 
         void spend(TechNode node){
             if(net.client()) return;
+            if(node instanceof IndustrialNode industrial){
+                if(!IndustrialResearch.unrestricted(node.planet)) IndustrialResearch.spend(industrial);
+                refreshIndustrial();
+                return;
+            }
 
             boolean complete = true;
 

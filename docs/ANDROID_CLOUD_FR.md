@@ -1,6 +1,6 @@
 # Compiler et installer depuis un smartphone Android
 
-Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 6B prépare un état de recherche indépendant pour la **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
+Cette branche dérive de Mindustry **v160.7**, commit amont `17012d61d9e4c3cbd9820d87e81c24495486ac53`. La Mission 6C ajoute une campagne progressive séparée à la **campagne industrielle planétaire séparée**, en plus du mode Industriel des parties personnalisées. Les campagnes classiques restent disponibles. Elle n’est pas une version officielle de Mindustry.
 
 ## Lancer une compilation sans ordinateur
 
@@ -16,14 +16,14 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m6b.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m6c.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
-## Mise à jour de M3/M4/M5 et sauvegardes
+## Mise à jour de M3/M4/M5/M6B et sauvegardes
 
-M6B conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 6. Installer l’APK par-dessus M3, M4 ou M5 : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+M6C conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 7. Installer l’APK par-dessus M3, M4, M5 ou M6B : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
 
 L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
 
@@ -53,9 +53,25 @@ Dans **Campagne → Serpulo industrielle → Machines**, consulter ou rechercher
 
 L’état industriel est enregistré dans les données de l’application, sous une clé distincte `industrial-research-v1-industrial-serpulo`. Il contient les technologies étudiées, les découvertes de matières et les contributions de recherche partielles. Les noms de contenus servent d’identifiants stables ; les clés de recherche classiques restent inchangées. Cette donnée suit l’export/import natif des données du jeu ; un seul fichier de secteur exporté ne contient pas à lui seul tout le profil de recherche.
 
-Le catalogue **Machines** est conservé, sans nouveau bouton de paiement. Toutes les technologies restent utilisables dans les parties industrielles, y compris les anciennes M4/M5. La découverte d’une matière ne déclenche aucun achat. Il n’y a ni coût supplémentaire de colonisation, ni verrou de secteur, ni modification de production hors écran.
+Le catalogue **Machines** est conservé, sans nouveau bouton de paiement. En M6B, toutes les technologies restaient utilisables ; M6C maintient cet accès sur la planète industrielle libre, y compris les anciennes M4/M5/M6B. La découverte d’une matière ne déclenche aucun achat. Il n’y a ni coût supplémentaire de colonisation, ni verrou de secteur, ni modification de production hors écran.
 
-Un arbre technique détaché réutilise les nœuds et contenus natifs sans remplacer `content.techNode` ni entrer dans les listes de déblocage automatique classiques. Les objectifs de découverte, de recherche et de nombre de bases industrielles sont préparés pour la suite. La fonction de paiement, réservée au futur écran de recherche et testée séparément, ne peut puiser que dans les bases de la planète industrielle. Aucun nouvel arbre de progression n’est encore proposé au joueur.
+Un arbre technique détaché réutilise les nœuds et contenus natifs sans remplacer `content.techNode` ni entrer dans les listes de déblocage automatique classiques. Les objectifs de découverte, de recherche et de nombre de bases industrielles sont préparés pour la suite. La fonction de paiement, réservée au futur écran de recherche et testée séparément, ne peut puiser que dans les bases de la planète industrielle. M6C propose désormais le graphe de recherche sur la nouvelle planète progressive, en conservant le catalogue.
+
+## Tester la progression stricte sans risquer les anciennes parties (M6C)
+
+1. Installer la mise à jour par-dessus l’application existante, sans désinstallation ni suppression de données. Une exportation complète des données reste conseillée avant toute mise à jour de test.
+2. Ouvrir **Jouer → Campagne**, puis sélectionner **Serpulo industrielle — progression** dans la liste des planètes. Au premier choix de campagne, l’option **Campagne industrielle — progression** mène à cette même planète.
+3. Sélectionner le secteur **170**, puis **Décoller**. Le dialogue précise que cette campagne est indépendante et qu’aucune ancienne campagne ne sera réinitialisée. Confirmer seulement si l’on souhaite commencer cette nouvelle campagne.
+4. Le noyau reçoit 100 cuivre. L’unité initiale, la foreuse mécanique et le convoyeur de base sont disponibles. Extraire cuivre/plomb, puis charbon et sable ; les autres machines se recherchent progressivement. Les découvertes sont enregistrées à la production ou à l’entrée en stock selon les mécanismes natifs.
+5. Ouvrir **Recherche industrielle** depuis le HUD ou la carte planétaire. Le graphe natif se déplace et se zoome au toucher. **Parcourir** propose une liste avec recherche textuelle ; toucher une technologie ouvre ses conditions, son parent, ses débouchés, ses coûts, les ressources déjà versées et le stock de cette seule campagne.
+6. Toucher **Contribuer** pour verser les ressources disponibles. Un paiement incomplet est conservé. Une technologie financée devient constructible ; les plans, schémas et fabriques ne permettent pas de contourner les recherches.
+7. Le bouton **Catalogue** conserve la consultation des machines, sans achat ni construction gratuite. Revenir à **Serpulo industrielle** (sans « progression ») pour retrouver les anciennes bases en accès libre. Revenir à **Serpulo** pour la campagne classique.
+
+Les secteurs stricts portent le préfixe `sector-industrial-serpulo-progressive-` et leur recherche la clé `industrial-research-v1-industrial-serpulo-progressive`. Les secteurs libres et leur clé M6B restent inchangés. Les stocks ne sont pas partagés. Les machines et recettes sont les mêmes objets natifs ; leurs contenus ne sont pas dupliqués.
+
+**Une seule campagne stricte est disponible dans cette version.** Choisir de nouveau cette planète reprend ses bases et recherches ; cela ne crée pas un profil supplémentaire. Aucun bouton de réinitialisation n’a été ajouté. Ne pas renommer/copier les fichiers d’une campagne vers l’autre. Pour recommencer ultérieurement avec plusieurs profils, une architecture dédiée sera nécessaire ; voir `docs/MISSION_6C_ARCHITECTURE.md`.
+
+Aucun frais supplémentaire de colonisation ni verrou géographique n’est ajouté. Les nouveaux voisins restent accessibles selon les règles industrielles existantes avec les chargements natifs. L’accès aux minerais dépend du terrain : l’exploration reste possible avec le noyau de base. L’arbre de recherche est organisé sans dépendances aux conquêtes ; les coûts de recherche natifs sont conservés et peuvent demander plusieurs versements.
 
 ## Signature et mises à jour de test
 
