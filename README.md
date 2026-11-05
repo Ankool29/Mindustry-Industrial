@@ -1,16 +1,16 @@
-## Mindustry Industrial — recherche indépendante Android (Mission 6B)
+## Mindustry Industrial — arbre technologique Android (Mission 6C)
 
-La branche [industrial-android](https://github.com/Ankool29/Mindustry-Industrial/tree/industrial-android), basée sur **v160.7**, dispose désormais d’un état de recherche industriel séparé : technologies étudiées, découvertes et paiements partiels. Les machines restent partagées avec Mindustry et les données classiques sont préservées.
+**[Télécharger l’APK M6C et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41997396029/artifacts/13401326793)** · **[Rapport, tests, captures et procédure sûre](MISSION_6C_VALIDATION.md)**.
 
-**[Télécharger l’APK M6B et ses sources](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/41983683363/artifacts/13395341877)** — [rapport des modifications, tests et captures](MISSION_6B_VALIDATION.md). **359 tests réussis**, compilation Android réelle et persistance vérifiée sur deux démarrages distincts du client. Installer par-dessus M3/M4/M5 **sans désinstallation**.
+La nouvelle planète **Serpulo industrielle — progression** propose des recherches natives avec dépendances, contributions progressives et machines verrouillées avant leur étude. Ses secteurs, stocks et recherches sont séparés. La planète **Serpulo industrielle** M4/M5/M6B reste en accès libre ; aucune ancienne campagne n’est convertie ou réinitialisée. Le catalogue Machines est conservé.
 
-**Aucune restriction nouvelle :** toutes les technologies restent accessibles en industriel, le catalogue **Machines** est conservé, aucun paiement de recherche n’est déclenché par l’interface, aucun coût de colonisation ni verrou de secteur n’est ajouté. La simulation des secteurs non visités reste celle de M5. L’arbre technique préparé n’est pas encore exposé au joueur.
+Installer par-dessus M3/M4/M5/M6B **sans désinstallation**. Pour commencer : **Jouer → Campagne → Serpulo industrielle — progression → secteur 170 → confirmer**. Une seule campagne stricte est disponible ; revenir sur sa planète reprend sa progression, sans créer une nouvelle partie. La campagne originale reste disponible sur **Serpulo**.
 
-Accès inchangé : **Jouer → Campagne → Serpulo industrielle → Machines**. Les campagnes classiques et le mode Industriel sur carte personnalisée restent disponibles.
+**367 tests réussis**, compilation Android réelle, signature précédente vérifiée, paiement partiel conservé après deux démarrages graphiques distincts. La navigation mobile a été contrôlée dans le cloud ; l’essai physique du nouvel APK sur S25 Ultra reste à confirmer.
 
-Historique : [Mission 5 — interface industrielle](MISSION_5_VALIDATION.md) · [Mission 4 — campagne planétaire](MISSION_4_VALIDATION.md) · [Mission 3 — mode Industriel](MISSION_3_VALIDATION.md) · [Mission 2 — compilation Android](MISSION_2_VALIDATION.md).
+Historique : [Mission 6B](MISSION_6B_VALIDATION.md) · [Mission 5](MISSION_5_VALIDATION.md) · [Mission 4](MISSION_4_VALIDATION.md) · [Mission 3](MISSION_3_VALIDATION.md) · [Mission 2](MISSION_2_VALIDATION.md).
 
-Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile toujours la branche `industrial-android`, même si le sélecteur affiche `master`.
+Pour compiler depuis un smartphone : [Actions → Android cloud APK → Run workflow](https://github.com/Ankool29/Mindustry-Industrial/actions/workflows/android-cloud.yml). Le lancement manuel compile la branche `industrial-android`, même si le sélecteur affiche `master`.
 
 [Guide Android : installation, sauvegardes et limites](https://github.com/Ankool29/Mindustry-Industrial/blob/industrial-android/docs/ANDROID_CLOUD_FR.md).
 
