@@ -16,14 +16,14 @@ Aucune compilation ni application de développement n’est nécessaire sur le t
 ## Installer sur le Galaxy S25 Ultra
 
 1. Dans **Mes fichiers → Téléchargements**, ouvrir le ZIP téléchargé puis choisir **Extraire**.
-2. Ouvrir `Mindustry-Industrial-v160.7-m6d.apk`.
+2. Ouvrir `Mindustry-Industrial-v160.7-m7b.apk`.
 3. Si Android le demande, autoriser temporairement **Installation d’applis inconnues** pour l’application qui ouvre le fichier, par exemple **Mes fichiers**, puis revenir à l’APK et toucher **Installer**.
 4. Sur certaines versions One UI, **Paramètres → Sécurité et confidentialité → Bloqueur automatique** peut empêcher cette installation. Si c’est le cas, le désactiver uniquement le temps d’installer cet APK de confiance, puis le réactiver. Les libellés peuvent varier selon la version de One UI.
 5. Lancer **Mindustry Industrial**. Révoquer ensuite l’autorisation d’installation d’applications inconnues si elle avait été activée.
 
 ## Mise à jour de M3/M4/M5/M6B et sauvegardes
 
-M6D conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 8. Installer l’APK par-dessus M3, M4, M5, M6B ou M6C : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
+M7B conserve l’identifiant `io.anuke.mindustry.industrial.m3` et la signature de M3, avec un code de version Android porté à 9. Installer l’APK par-dessus M3, M4, M5, M6B, M6C ou M6D : **ne pas désinstaller l’application**. Les parties existantes gardent leur mode et leurs fichiers. Une exportation de sauvegarde depuis les paramètres reste recommandée avant une mise à jour de test.
 
 L’application coexiste avec Mindustry officiel et Mission 2 (`io.anuke.mindustry.industrial`). Pour transférer leurs données, exporter puis importer l’archive depuis les paramètres du jeu. Une partie importée ne devient pas industrielle automatiquement.
 
@@ -121,3 +121,11 @@ La surcharge concerne uniquement **Serpulo industrielle — progression**. Les c
 Les parties strictes M6C sont conservées et démarrent cette nouvelle économie au compteur 1, quel que soit leur nombre de bases existantes : aucun rattrapage de frais. Une visite est gratuite ; réimplanter après abandon compte comme une implantation supplémentaire et ne diminue jamais le compteur. Les deux autres campagnes ne changent pas.
 
 Annuler avant départ ne prélève rien. Le paiement intervient après sauvegarde réussie de la destination ; un journal reprend une opération interrompue. Il ne faut pas restaurer isolément `settings.bin` ou un secteur d’une autre date : utiliser une exportation complète pour conserver la cohérence entre les secteurs, stocks et journal. Aucun effacement n’est requis pour tester.
+
+## Mission 7B — diagnostic économique en lecture seule
+
+Dans **Serpulo industrielle — progression**, ouvrir la carte planétaire, sélectionner un secteur, puis **Diagnostic économique**. La liste permet de consulter chaque colonie ; toucher une matière ou une plateforme ouvre son détail. Le bouton **Actualiser** relit un instantané, sans modifier les stocks. Le défilement est vertical. La consultation solo est en pause.
+
+Le noyau actif fournit un stock lu dans le monde ; les secteurs non chargés affichent le stock du modèle natif et ses estimations. Le prélèvement net au noyau n’est pas la consommation totale des machines. Les moyennes d’exports et l’offre d’importation ne sont pas des quantités livrées. Les détails de plateformes sont disponibles uniquement dans le monde actif ; aucun monde n’est chargé pour les inspecter. La dernière date d’échantillonnage n’existe pas dans M6D : elle est donc indiquée inconnue après redémarrage, puis suivie en mémoire pendant la session. Aucun historique n’est écrit.
+
+Aucun moteur économique nouveau, aucune production application fermée, aucune modification des recherches, coûts M6D ou règles de voisinage. Les campagnes classique et industrielle libre ne montrent pas ce diagnostic.

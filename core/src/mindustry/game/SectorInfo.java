@@ -291,6 +291,8 @@ public class SectorInfo{
 
             Arrays.fill(coreDeltas, 0);
             Arrays.fill(productionDeltas, 0);
+            // Read-only diagnostic freshness; never persisted or used by the simulation.
+            IndustrialDiagnostics.measured(state.rules.sector);
         }
     }
 

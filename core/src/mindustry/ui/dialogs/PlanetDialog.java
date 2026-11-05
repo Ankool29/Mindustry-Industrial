@@ -60,6 +60,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
     public @Nullable Seq<Planet> launchCandidates;
     public Mode mode = look;
     public boolean launching;
+    private IndustrialDiagnosticsDialog diagnostics;
     public Cons<Sector> listener = s -> {};
 
     public Seq<Sector> newPresets = new Seq<>();
@@ -1344,6 +1345,13 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
 
         if(sector.hasBase()){
             stable.button("@stats", Icon.info, Styles.cleart, () -> showStats(sector)).height(40f).fillX().row();
+        }
+        if(mode == look && IndustrialDiagnostics.enabled(sector.planet)){
+            stable.button("@industrial.diagnostics.title", Styles.cleart, () -> {
+                if(diagnostics == null) diagnostics = new IndustrialDiagnosticsDialog(sector.planet);
+                diagnostics.show();
+            })
+                .name("industrial-diagnostics").height(60f).fillX().row();
         }
 
         if((sector.hasBase() && mode == look) || canSelect(sector) || (sector.preset != null && sector.preset.alwaysUnlocked) || debugSelect){
