@@ -1451,7 +1451,7 @@ public class PlanetDialog extends BaseDialog implements PlanetInterfaceRenderer{
                     Events.fire(new SectorLaunchLoadoutEvent(sector, from, loadout));
 
                     CoreBuild core = player.team().core();
-                    if(core == null || settings.getBool("skipcoreanimation")){
+                    if(IndustrialCampaign.strict(sector.planet) || core == null || settings.getBool("skipcoreanimation")){
                         //just... go there
                         control.playSector(from, sector);
                         //hide only after load screen is shown

@@ -21,3 +21,7 @@ Au démarrage/reprise, un journal dont le marqueur existe dans la sauvegarde des
 Le code et le test de M6C proposent **six** voisins autour de 170 (et non cinq). M6D conserve exactement `canExplore` et `findLauncher` ; aucun filtrage arbitraire n'est ajouté. Le joueur a explicitement confirmé de conserver les choix M6C, même s'il y en a six. Les références à cinq dans la demande ne correspondent pas à la version auditée.
 
 Les paramètres natifs Arc ne garantissent pas un remplacement atomique/fsync de settings.bin. Le journal traite les interruptions entre étapes persistées ; une coupure au milieu de l'écriture des paramètres peut provoquer une restauration de leur sauvegarde native et perdre des mises à jour récentes. Le protocole n'annonce donc pas une garantie ACID face à une corruption ou une restauration désynchronisée. Les erreurs synchrones de sauvegarde sont propagées, avec retour arrière en mémoire et journal conservé pour nouvelle tentative.
+
+## Ressources pendant le départ
+
+Le départ strict utilise directement l'écran de chargement, sans animation de décollage de la source. Une pause transitoire empêche production, construction et tours hors écran de consommer le stock validé pendant le délai de chargement. La pause est levée par le démarrage natif du monde destination ; la garde de chargement est libérée même si le chargement échoue. Les autres campagnes gardent leur animation et leur simulation normales. Cela évite une réservation avec remboursement potentiellement impossible si la production avait rempli les noyaux entre-temps.
