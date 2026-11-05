@@ -81,7 +81,8 @@ class IndustrialContentTests{
         assertTrue(choices.contains(Blocks.beamNode));
         industrial();
         assertTrue(IndustrialContent.visible(Blocks.groundFactory), "Nova also builds; do not remove a dual-use factory");
-        assertFalse(IndustrialContent.visible(Blocks.navalFactory));
+        assertTrue(IndustrialContent.visible(Blocks.navalFactory), "Retusa builds and repairs civilian infrastructure");
+        assertFalse(IndustrialContent.visible(Blocks.tankFabricator));
         for(var block : new Block[]{Blocks.additiveReconstructor, Blocks.multiplicativeReconstructor, Blocks.exponentialReconstructor, Blocks.tetrativeReconstructor,
             Blocks.payloadConveyor, Blocks.payloadRouter, Blocks.payloadMassDriver, Blocks.constructor, Blocks.largeConstructor, Blocks.payloadLoader, Blocks.payloadUnloader,
             Blocks.repairPoint, Blocks.mender, Blocks.overdriveDome, Blocks.massDriver, Blocks.launchPad}){
