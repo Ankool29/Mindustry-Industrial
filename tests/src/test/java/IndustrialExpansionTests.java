@@ -79,6 +79,13 @@ class IndustrialExpansionTests{
         assertTrue(IndustrialCampaign.canExplore(source));
         assertFalse(IndustrialExpansion.canRecoverWithoutSource(Planets.industrialSerpulo.getStartSector()));
     }
+    @Test void initialLandingInterruptedAfterSaveIsCountedOnceOnRecovery(){
+        assertEquals(0,IndustrialExpansion.ledger(strict).established);destination=source;land();
+        assertNotNull(IndustrialExpansion.ledger(strict).pending);
+        assertEquals(-1,IndustrialExpansion.ledger(strict).pending.source);
+        restart();IndustrialExpansion.recover(strict);assertEquals(1,IndustrialExpansion.ledger(strict).established);
+        restart();IndustrialExpansion.recover(strict);assertEquals(1,IndustrialExpansion.ledger(strict).established);
+    }
     @Test void proposedPricesAndCapsAreExactAndConfigurable(){
         Policy p=new Policy();
         for(int[] v:new int[][]{{0,0,0},{1,0,0},{2,250,200},{3,500,400},{4,750,600},{9,2000,1600},{100,2000,1600},{Integer.MAX_VALUE,2000,1600}}){

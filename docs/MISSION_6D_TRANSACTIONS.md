@@ -29,3 +29,5 @@ Le départ strict utilise directement l'écran de chargement, sans animation de 
 ## Perte volontaire de toutes les bases
 
 Un atterrissage initial sans source reçoit aussi un identifiant, pour être comptabilisé une seule fois. Le raccourci natif de retour au secteur initial ne donne pas de noyau gratuit tant qu'une autre base subsiste : il faut une source voisine finançable. Si toutes les bases ont disparu, une confirmation explicite permet la reprise native au secteur initial, sans source à débiter ; recherches et compteur sont conservés, et cette nouvelle implantation augmente le compteur. Ce secours ne choisit pas de secteur lointain et ne baisse jamais les tarifs futurs. Les choix de carte restent calculés par les mêmes fonctions M6C.
+
+Les premiers atterrissages et les reprises sans source utilisent eux aussi un journal (`source = -1`, montant vide) avant leur sauvegarde, afin de terminer l'incrémentation une seule fois si l'application s'arrête entre la création du .msav et la mise à jour du compteur. Les anciennes recherches ne sont jamais réinitialisées.

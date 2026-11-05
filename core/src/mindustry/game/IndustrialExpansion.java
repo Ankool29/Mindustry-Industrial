@@ -96,8 +96,14 @@ public final class IndustrialExpansion{
     public static void stamp(Sector destination){
         if(!IndustrialCampaign.strict(destination.planet)) return;
         Ledger ledger = ledger(destination.planet);
-        state.rules.tags.put(marker, ledger.pending != null && ledger.pending.destination == destination.id ?
-            ledger.pending.id : UUID.randomUUID().toString());
+        if(ledger.pending == null){
+            // Initial/recovery landings also need a journal for a crash after .msav creation.
+            Journal journal = new Journal(); journal.id = UUID.randomUUID().toString();
+            journal.source = -1; journal.destination = destination.id;
+            ledger.pending = journal; persist(destination.planet, ledger);
+        }
+        if(ledger.pending.destination != destination.id) throw new IllegalStateException("Industrial landing destination mismatch");
+        state.rules.tags.put(marker, ledger.pending.id);
     }
 
     private static boolean landed(Planet planet, Journal journal){
@@ -116,21 +122,23 @@ public final class IndustrialExpansion{
         if(!landed(planet, journal)){
             ledger.pending = null; persist(planet, ledger); return;
         }
-        Sector source = planet.sectors.get(journal.source);
-        if(source.isBeingPlayed()) throw new IllegalStateException("Recover expansion before loading its source");
-        ItemSeq previous = source.info.items.copy();
-        if(!previous.has(journal.total)) throw new IllegalStateException("Industrial launch stock mismatch; journal retained");
+        Sector source = journal.source < 0 ? null : planet.sectors.get(journal.source);
+        if(source != null && source.isBeingPlayed()) throw new IllegalStateException("Recover expansion before loading its source");
+        ItemSeq previous = source == null ? null : source.info.items.copy();
+        if(previous != null && !previous.has(journal.total)) throw new IllegalStateException("Industrial launch stock mismatch; journal retained");
         int oldCount = ledger.established;
         String previousLanding = ledger.lastLanding;
         try{
-            journal.total.each(source.info.items::remove);
-            source.saveInfo();
+            if(source != null){
+                journal.total.each(source.info.items::remove);
+                source.saveInfo();
+            }
             if(ledger.established < Integer.MAX_VALUE) ledger.established ++;
             ledger.lastLanding = journal.id;
             ledger.pending = null;
             persist(planet, ledger);
         }catch(Throwable failure){
-            source.info.items = previous; source.saveInfo();
+            if(source != null){source.info.items = previous; source.saveInfo();}
             ledger.established = oldCount; ledger.lastLanding = previousLanding; ledger.pending = journal;
             Core.settings.putJson(key(planet), ledger);
             throw failure;
