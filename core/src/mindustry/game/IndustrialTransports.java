@@ -338,8 +338,12 @@ public final class IndustrialTransports{
             if(changed) persist();
         }catch(TransportException ignored){}
     }
-    private static String phaseName(Phase phase){
-        return switch(phase){
+    private static boolean applied(Shipment s){
+        return s.phase == Phase.overlay && active() && state.getSector().id == s.destination && mark(state.rules, inTag) >= s.incoming;
+    }
+    private static String phaseName(Shipment s){
+        if(applied(s)) return "tampon appliqué, crédit à sauvegarder";
+        return switch(s.phase){
             case prepared -> "débit à sauvegarder";
             case transit -> "attente de réception";
             case arriving -> "atterrissage";
@@ -356,14 +360,14 @@ public final class IndustrialTransports{
         for(var s : book.pending){
             if(s.source != sector.id && s.destination != sector.id) continue;
             lots++;if(s.phase == Phase.prepared) pending += s.total();
-            else if(s.phase == Phase.credit) receiving += s.total();else transit += s.total();
+            else if(s.phase == Phase.credit || applied(s)) receiving += s.total();else transit += s.total();
         }
         Totals totals = book.totals.find(t -> t.sector == sector.id);
         StringBuilder detail = new StringBuilder();int shown = 0;
         for(var s : book.pending){
             if(s.source != sector.id && s.destination != sector.id) continue;
             if(shown++ >= 12){detail.append("\nAutres lots : consulter leur secteur source/destination.");break;}
-            detail.append("\n#").append(s.sequence).append(" · ").append(s.source).append(" → ").append(s.destination).append(" · ").append(phaseName(s.phase));
+            detail.append("\n#").append(s.sequence).append(" · ").append(s.source).append(" → ").append(s.destination).append(" · ").append(phaseName(s));
             for(var cargo : s.cargo)detail.append(" · ").append(cargo.item).append(" : ").append(cargo.amount);
         }
         return "Mouvements enregistrés (objets, pas débits moyens)\nExpédiés confirmés : " + (totals == null ? 0 : totals.sent) +
