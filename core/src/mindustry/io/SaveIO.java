@@ -7,6 +7,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.io.versions.*;
 import mindustry.world.*;
 
@@ -41,6 +42,7 @@ public class SaveIO{
     }
 
     public static void save(Fi file, SaveOptions options){
+        IndustrialTransports.beforeSave(file);
         boolean exists = file.exists();
         if(exists) file.moveTo(backupFileFor(file));
         try{
@@ -49,6 +51,7 @@ public class SaveIO{
             if(exists) backupFileFor(file).moveTo(file);
             throw new RuntimeException(e);
         }
+        IndustrialTransports.afterSave(file);
     }
 
     public static DataInputStream getStream(Fi file){
@@ -157,6 +160,7 @@ public class SaveIO{
                 throw new SaveException(e.getCause());
             }
         }
+        IndustrialTransports.loaded();
     }
 
     /** Loads from a deflated (!) input stream. */

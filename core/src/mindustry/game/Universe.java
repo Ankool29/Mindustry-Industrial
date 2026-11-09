@@ -162,7 +162,7 @@ public class Universe{
                 continue;
             }
 
-            if(planet.campaignRules.legacyLaunchPads){
+            if(planet.campaignRules.legacyLaunchPads && !IndustrialTransports.enabled(planet)){
                 //first pass: clear import stats
                 for(Sector sector : planet.sectors){
                     if(sector.hasBase() && !sector.isBeingPlayed()){
@@ -189,6 +189,8 @@ public class Universe{
                 }
             }
 
+            IndustrialTransports.turn(planet);
+
             //third pass: everything else
             for(Sector sector : planet.sectors){
                 if(sector.hasBase()){
@@ -212,7 +214,7 @@ public class Universe{
                             //add production, making sure that it's capped
                             sector.info.production.each((item, stat) -> sector.info.items.add(item, Math.min((int)(stat.mean * newSecondsPassed), sector.info.storageCapacity - sector.info.items.get(item))));
 
-                            if(planet.campaignRules.legacyLaunchPads){
+                            if(planet.campaignRules.legacyLaunchPads && !IndustrialTransports.enabled(planet)){
                                 sector.info.export.each((item, stat) -> {
                                     if(sector.info.items.get(item) <= 0 && sector.info.production.get(item, ExportStat::new).mean < 0 && stat.mean > 0){
                                         //cap export by import when production is negative.

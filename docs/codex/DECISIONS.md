@@ -31,3 +31,7 @@ Les rapports ci-dessous sont sur `master`, contrairement au code jouable. Garder
 - [M7B — validation](https://github.com/Ankool29/Mindustry-Industrial/blob/master/MISSION_7B_VALIDATION.md).
 
 Pour les prochaines étapes : [ROADMAP](ROADMAP.md). Ne modifier une décision qu’avec sa justification et l’autorisation applicable, sans réécrire l’historique des preuves.
+
+## M7C — autorisation et choix en validation
+
+La mission M7C est explicitement autorisée après fusion de H0. Réutiliser les rampes/réceptions, une destination par secteur, lots physiques finis et journal avec marqueurs de sauvegarde. Attendre un point de sauvegarde pour rendre un débit livrable ; hors écran, seulement des tampons connus et bornés, sans extrapoler des cargaisons. En cas d’ambiguïté, blocage signalé et conservation des fichiers plutôt que crédit supposé. Pas de garantie ACID entre fichiers, ni de correction des recettes estimées M7D. Voir [rapport M7C](../../MISSION_7C_VALIDATION.md) pour les résultats réellement exécutés. PR sans fusion, essais S25 requis ; M7D non autorisée.

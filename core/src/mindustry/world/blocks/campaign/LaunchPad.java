@@ -16,6 +16,7 @@ import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -144,11 +145,13 @@ public class LaunchPad extends Block{
 
             //increment launchCounter then launch when full and base conditions are met
             if((launchCounter += edelta()) >= launchTime && items.total() >= itemCapacity){
+                boolean conservative = state.isCampaign() && IndustrialTransports.enabled(state.getPlanet()) && team == state.rules.defaultTeam;
+                if(conservative && !IndustrialTransports.launch(this)) return;
                 //if there are item requirements, use those.
                 consume();
                 launchSound.at(x, y, 1f + Mathf.range(launchSoundPitchRand));
                 LaunchPayload entity = LaunchPayload.create();
-                items.each((item, amount) -> entity.stacks.add(new ItemStack(item, amount)));
+                if(!conservative) items.each((item, amount) -> entity.stacks.add(new ItemStack(item, amount)));
                 entity.set(this);
                 entity.lifetime(120f);
                 entity.team(team);
@@ -174,6 +177,10 @@ public class LaunchPad extends Block{
                     dest == null || !dest.hasBase() ? Core.bundle.get("sectors.nonelaunch") :
                     "[accent]" + dest.name());
             }).pad(4).wrap().width(200f).left();
+            if(IndustrialTransports.enabled(state.getPlanet())){
+                table.row();
+                table.add("Lots finis : attente de sauvegarde avant livraison. Voir le diagnostic planétaire.").pad(4).wrap().width(200f).left();
+            }
         }
 
         @Override
@@ -225,7 +232,7 @@ public class LaunchPad extends Block{
     @EntityDef(LaunchPayloadc.class)
     @Component(base = true)
     static abstract class LaunchPayloadComp implements Drawc, Timedc, Teamc{
-        @Import float x,y;
+        @Import float x,y,time;
 
         Seq<ItemStack> stacks = new Seq<>();
         transient Interval in = new Interval();
@@ -280,6 +287,9 @@ public class LaunchPad extends Block{
 
         @Override
         public void update(){
+            if(state.isCampaign() && IndustrialTransports.enabled(state.getPlanet()) && team() == state.rules.defaultTeam && !IndustrialTransports.adopt(stacks)){
+                time = 0f;
+            }
             float r = 3f;
             if(in.get(4f - fin()*2f)){
                 Fx.rocketSmoke.at(cx() + Mathf.range(r), cy() + Mathf.range(r), fin());
@@ -289,6 +299,7 @@ public class LaunchPad extends Block{
         @Override
         public void remove(){
             if(!state.isCampaign() || net.client()) return;
+            if(IndustrialTransports.enabled(state.getPlanet())) return;
 
             Sector destsec = state.rules.sector.info.destination;
 

@@ -154,18 +154,18 @@ class IndustrialDiagnosticsTests{
         assertEquals(Evidence.activeObservation,IndustrialDiagnostics.read(strict).colony(source).evidence);
         Log.info("M7B_PROTOCOL factory real=@ native-offscreen=@ returned=@",produced,projected,Team.sharded.core().items.get(Items.graphite));
     }
-    @Test void nativeReceptionHasIdenticalResultWithAndWithoutDiagnosticReads(){
+    @Test void strictReceptionNoLongerMaterializesNativeMeansWithOrWithoutDiagnosticReads(){
         int[] output=new int[2];
         for(int trial=0;trial<2;trial++){
             base(source);base(target);arena(target);source.info.destination=target;rate(source.info.export,Items.copper,2);
             world.tile(20,20).setBlock(Blocks.landingPad,Team.sharded);
             LandingPadBuild pad=(LandingPadBuild)world.tile(20,20).build;pad.config=Items.copper;pad.liquids.add(Liquids.water,1500);
             for(int i=0;i<3500;i++){tick(1);if(trial==1&&i%60==0)IndustrialDiagnostics.read(strict);}
-            output[trial]=pad.items.get(Items.copper);assertEquals(100,output[trial]);assertEquals(0,pad.liquids.get(Liquids.water),.01f);
-            var c=IndustrialDiagnostics.read(strict).colony(target);assertTrue(c.material(Items.copper).receivedPerMinute>0);
+            output[trial]=pad.items.get(Items.copper);assertEquals(0,output[trial]);assertEquals(1500,pad.liquids.get(Liquids.water),.01f);
+            var c=IndustrialDiagnostics.read(strict).colony(target);assertTrue(c.material(Items.copper).receivedPerMinute == 0);
             assertEquals(0,source.info.items.get(Items.copper));
         }
-        assertEquals(output[0],output[1]);Log.info("M7B_PROTOCOL native reception unchanged: @/@",output[0],output[1]);
+        assertEquals(output[0],output[1]);Log.info("M7C_PROTOCOL estimated reception suppressed: @/@",output[0],output[1]);
     }
     @Test void fiveTwentyFiftyHundredSyntheticColoniesReturnOnlyDetachedData(){
         for(int n:new int[]{5,20,50,100}){

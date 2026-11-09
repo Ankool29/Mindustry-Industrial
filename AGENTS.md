@@ -16,7 +16,7 @@ Ce guide concerne le fork `Ankool29/Mindustry-Industrial`, pas une contribution 
 - Un seul monde sectoriel intégralement simulé ; ailleurs, modèle agrégé performant. Ne pas ajouter de production application fermée sans décision explicite.
 - Aucune création artificielle de ressources par une nouvelle logistique/simulation. Le natif actuel a des limites connues : ne pas les déclarer corrigées ni les corriger hors mission.
 - Privilégier bâtiments/mécanismes natifs, compatibilité des sauvegardes et tests isolés reproductibles.
-- Ni refonte non demandée, ni mission suivante sans validation explicite. H0 n’autorise pas M7C.
+- Ni refonte non demandée, ni mission suivante sans validation explicite. La feuille de route ne vaut pas autorisation.
 
 ## Lecture à la demande
 

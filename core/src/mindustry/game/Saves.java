@@ -322,6 +322,9 @@ public class Saves{
                 current = this;
                 totalPlaytime = meta.timePlayed;
                 savePreview();
+            }catch(IndustrialTransports.TransportException e){
+                // This is an economic ambiguity, not a corrupt map. Control must preserve the slot.
+                throw e;
             }catch(Throwable e){
                 throw new SaveException(e);
             }
