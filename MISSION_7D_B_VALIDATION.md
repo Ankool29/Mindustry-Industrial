@@ -2,6 +2,8 @@
 
 ## Périmètre et verdict
 
+**PR prête pour les tests Android, pas encore pour fusion.** [PR #4](https://github.com/Ankool29/Mindustry-Industrial/pull/4) ouverte en brouillon, sans merge. Compilation et tests CI réussis ; validation réelle sur le S25 attendue.
+
 Mission B uniquement, sur `feature/m7d-capture`, à partir de l’audit approuvé de la PR #3 et du code M7C.1. Aucun merge, aucune simulation autonome ni mission C à F. Cette branche contient le rapport A approuvé ; elle ne fusionne pas automatiquement sa PR.
 
 Le graphe est un **relevé**, pas un nouveau propriétaire des ressources. Les mécanismes M7C.1 restent inchangés. Les moyennes de production natives et leurs limites restent présentes ; B ne les corrige pas et ne les transforme jamais en stock expédiable. Les essais physiques sur S25 restent à effectuer avant validation utilisateur.
@@ -50,7 +52,9 @@ Aucune recette, règle de campagne, recherche, frais M6D, génération, progress
 
 ## Tests et preuves
 
-Suite locale : **461 tests réussis, 0 échec, 0 erreur, 0 ignoré** (17 classes JUnit), dont 23 nouveaux tests de capture. Les 41 tests de transport M7C.1 et les 12 tests du diagnostic M7B restent verts. Après ajout de la mesure CPU, le seul banc modifié a été réexécuté avec succès ; deux scénarios ont aussi été renforcés et réussis pour le filtre/progression du déchargeur et le seuil d’eau de réception. Les preuves CI du commit livré sont indiquées ci-dessous.
+Suite locale : **461 tests réussis, 0 échec, 0 erreur, 0 ignoré** (17 classes JUnit), dont 23 nouveaux tests de capture. Les 41 tests de transport M7C.1 et les 12 tests du diagnostic M7B restent verts. Après ajout de la mesure CPU, le seul banc modifié a été réexécuté avec succès ; deux scénarios ont aussi été renforcés et réussis pour le filtre/progression du déchargeur et le seuil d’eau de réception. La CI a ensuite confirmé exactement **461 réussis / 0 échec / 0 erreur / 0 ignoré**, dont 23 capture, 41 transports et 12 diagnostic, dans les XML des 17 classes téléchargés. Commit compilé : `5566f05fc391c42b8ac68be1f1b2b620257b2b8a`.
+
+Preuves téléchargeables de cette exécution : [JUnit/HTML](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42874641316/artifacts/13792490088), [journaux et contrôles APK](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42874641316/artifacts/13792340286). Les SHA-256 des trois archives téléchargées correspondent aux digests GitHub ; le source embarqué porte le même SHA Git dans son en-tête d’archive. `actionlint`, `git diff --check` et les chemins Markdown locaux sont valides.
 
 Les scénarios couvrent les modules d’objets/liquides/batteries partagés, convoyeurs et incohérences, états de machines, minerais réellement couverts, routes vs proximité, configurations opaques, empreinte, capture aux chargements/checkpoints, détachement, cache borné et dépassement de limite. Les captures répétées comparent octet à octet monde sauvegardé, Settings et journal M7C.1, ainsi que stocks, progressions et `SectorInfo` en RAM. Les modes classique/libre restent sans graphe.
 
@@ -60,14 +64,14 @@ La fixture historique M7B est chargée sans réécriture : **2 650 cuivre au noy
 
 Banc serveur : un seul monde synthétique de **201 bâtiments et 734 adjacences**, capturé sous 5/20/50/100 identités sectorielles distinctes. Aucun de ces graphes ne simule une recette. Dix captures de chauffe ; temps total mural et allocations du thread par lot ; heap global après GC avant/après, donc approximation dépendante du GC. La taille JSON UTF-8 est informative, pas un coût de sauvegarde ajouté.
 
-Mesure ciblée locale (Java 17 serveur, pas Android), extraite des lignes `M7DB_PERF` :
+Mesure du **runner GitHub Actions Ubuntu 22.04 / Java 17**, extraite des lignes `M7DB_PERF` de `tests.log` du commit livré (mesure serveur, pas Android) :
 
 | Secteurs | Temps mural total / moyen (ms) | CPU du thread total (ms) | Allocations cumulées (octets) | Heap retenu après GC (octets, approx.) | JSON UTF-8 (octets) |
 | --- | --- | --- | --- | --- | --- |
-| 5 | 31,246 / 6,249 | 25,464 | 2 899 632 | 1 911 208 | 319 542 |
-| 20 | 51,391 / 2,570 | 41,032 | 11 607 592 | 7 657 144 | 1 278 202 |
-| 50 | 173,315 / 3,466 | 123,193 | 28 995 664 | 19 264 864 | 3 195 533 |
-| 100 | 270,877 / 2,709 | 178,958 | 57 856 072 | 38 315 520 | 6 391 084 |
+| 5 | 6,964 / 1,393 | 6,932 | 2 899 632 | 1 851 208 | 319 531 |
+| 20 | 33,176 / 1,659 | 31,551 | 11 597 920 | 7 656 984 | 1 278 161 |
+| 50 | 67,864 / 1,357 | 57,304 | 28 994 800 | 19 351 928 | 3 195 431 |
+| 100 | 130,377 / 1,304 | 108,251 | 57 980 000 | 38 409 328 | 6 390 849 |
 
 Les allocations cumulées comprennent les temporaires, elles ne sont pas la taille retenue du cache. Le temps mural varie avec le serveur/JIT ; il ne constitue pas une borne de latence. Le CPU est mesuré par `ThreadMXBean`, sans le GC forcé de mesure mémoire ni l’encodage JSON.
 
@@ -75,9 +79,16 @@ Ces chiffres ne sont pas des performances S25 et ne représentent pas cent grand
 
 ## APK et contrôles Android
 
-À compléter avec le commit réellement construit, workflow, checksum, version et certificat vérifiés avant publication finale.
+- [Workflow réussi](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42874641316), job `apk` `130034594059`, SHA **`5566f05fc391c42b8ac68be1f1b2b620257b2b8a`**.
+- [Télécharger l’artefact APK et ses sources/licences](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42874641316/artifacts/13791162010), archive GitHub à décompresser ; fichier **`Mindustry-Industrial-v160.7-m7db.apk`**, 80 189 915 octets. Artefact conservé jusqu’au 10 décembre 2026 selon GitHub.
+- SHA-256 du **fichier APK** : `0fd8b2ca44cc33c1af6ecb0fdc473aadac1bf17c70a7d1de6d8e38e8ae8aab15`.
+- Version **`8-industrial-m7db-160.7`**, **versionCode 12** ; paquet **`io.anuke.mindustry.industrial.m3`** ; minSDK 21 / cible 36, arm64-v8a et atlas présents.
+- Certificat SHA-256 **`61254fd2280bf34aa64bd06405cf0e2bc9b2d8fe7df4cc615c39983bcdfd8086`** : identique à l’APK M7C.1 téléchargé et vérifié (code 11), clé inchangée. Mise à jour compatible par identité/signature/version ; installation physique non effectuée par Codex.
+- APK téléchargé puis contrôlé avec `aapt`, `apksigner verify` et `zipalign -c -P 16 4` : réussis. Sources Mindustry/Arc et licences distribuées ; fixture et script graphique exclus. Java Temurin 17.0.21, Gradle 8.14.3, AGP 8.10.1, SDK/build-tools 36. Aucun nouvel outillage ajouté.
 
-Contrôle graphique cloud : client natif `-testMobile`, 600 × 1 000, copie temporaire de données M7B/M7C.1 et script externe **exclus du dépôt/APK**. Ouverture depuis la carte, provenance/éligibilité, capture répétée sans mutation de `SectorInfo`/stocks, détail de noyau, défilement vertical seul, retour, réutilisation du dialogue et consultation du secteur 170 pendant que 171 reste chargé : réussis. Captures overview/détail/inactif et marqueurs `M7DB_UI_ACTIVE_CAPTURE_READONLY_PORTRAIT_OK` / `M7DB_UI_INACTIVE_CACHED_NO_WORLD_LOAD_OK` conservés dans les preuves locales de travail. Le fond a été rendu opaque après contrôle de lisibilité.
+Le dernier commit documentaire peut être plus récent que ce SHA : il complète ce rapport sans changer le code, les tests ou le workflow de l’APK. Aucun nouveau build n’est nécessaire pour cette seule documentation.
+
+Contrôle graphique cloud : client natif `-testMobile`, 600 × 1 000, copie temporaire de données M7B/M7C.1 et script externe **exclus du dépôt/APK**. Ouverture depuis la carte, provenance/éligibilité, capture répétée sans mutation de `SectorInfo`/stocks, détail de noyau, défilement vertical seul, retour, réutilisation du dialogue et consultation du secteur 170 pendant que 171 reste chargé : réussis. Captures overview/détail/inactif avec la fenêtre entièrement dans l’écran virtuel (contrôles visibles), et marqueurs `M7DB_UI_ACTIVE_CAPTURE_READONLY_PORTRAIT_OK` / `M7DB_UI_INACTIVE_CACHED_NO_WORLD_LOAD_OK` conservés dans les preuves locales de travail. Le fond a été rendu opaque après contrôle de lisibilité.
 
 Cet essai ne prouve ni l’installation ni les performances réelles du Samsung. Ne jamais désinstaller/effacer les données pour tester.
 
