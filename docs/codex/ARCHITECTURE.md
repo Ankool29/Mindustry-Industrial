@@ -25,3 +25,9 @@
 `Universe` utilise des moyennes hors écran, pas les recettes machine par machine ; temps de campagne joué, pas temps civil application fermée. Les groupes planétaires ne font pas avancer automatiquement les autres campagnes. La destination d’export est sectorielle. M7B lit les structures et date les échantillons en mémoire ; il ne livre ni ne produit.
 
 Le journal M6D n’est pas une garantie ACID couvrant paramètres et mondes. Pour le détail, lire seulement le document nécessaire : [séparation M6C](../MISSION_6C_ARCHITECTURE.md), [transactions M6D](../MISSION_6D_TRANSACTIONS.md), ou les [rapports référencés](DECISIONS.md#preuves-existantes).
+
+## M7C — transport progressif
+
+[IndustrialTransports](../../core/src/mindustry/game/IndustrialTransports.java) branche uniquement les rampes/réceptions de la planète progressive et neutralise leur ancien crédit statistique. Journal fini `saves/industrial-transports-v1.bin`, marqueurs débit/crédit dans `Rules.tags`, points de sauvegarde `SaveIO` ; état agrégé de tampons connus, sans second monde chargé. Ne pas restaurer séparément un secteur et son journal. Les moyennes natives de **production** restent inchangées (M7D). Atomicité, migration et limites : [validation M7C](../../MISSION_7C_VALIDATION.md).
+
+M7C.1 complète les relevés avec l’arrivée finie appariée et son eau déjà consommée, afin de l’achever dans un tampon virtuel au prochain tour ; les champs v1 sont facultatifs. Le diagnostic distingue la réservation hors écran du crédit physique confirmé. Voir [M7C.1](../../MISSION_7C1_VALIDATION.md), sans simulation de convoyeurs/recettes.

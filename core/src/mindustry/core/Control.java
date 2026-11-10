@@ -580,6 +580,12 @@ public class Control implements ApplicationListener, Loadable{
                     reloader.end();
                 }
 
+            }catch(IndustrialTransports.TransportException e){
+                Log.err(e);
+                state.set(State.menu);
+                reloader.end();
+                ui.showErrorMessage(e.getMessage());
+                return;
             }catch(SaveException e){
                 Log.err(e);
                 sector.save = null;
@@ -602,6 +608,7 @@ public class Control implements ApplicationListener, Loadable{
         reloader.begin();
         world.loadSector(sector, params);
         state.rules.sector = sector;
+        IndustrialTransports.generated(sector);
         sector.info.origin = origin;
         sector.info.destination = origin;
         sector.info.attempts ++;

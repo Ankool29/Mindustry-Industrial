@@ -24,6 +24,7 @@ Le module et ses rapports sont définis dans [build.gradle](../../build.gradle) 
 | Recherche et progression | `IndustrialResearchTests`, `IndustrialProgressionTests` |
 | Frais, abandons, reprise | `IndustrialExpansionTests` |
 | Diagnostic et comparaison actif/hors écran | `IndustrialDiagnosticsTests` |
+| Manifestes finis, journal, reprise, conservation et tampons | `IndustrialTransportTests` |
 
 Les tests Gradle sont headless ; ils ne prouvent ni installation Android ni confort tactile. Rapports JUnit : `tests/build/test-results/test/` ; HTML : `tests/build/reports/tests/test/`. Les scripts graphiques/bancs historiques sont liés depuis les [rapports existants](DECISIONS.md#preuves-existantes), pas dupliqués ici.
 
@@ -31,7 +32,7 @@ Les tests Gradle sont headless ; ils ne prouvent ni installation Android ni conf
 
 Suivre le [guide cloud existant](../ANDROID_CLOUD_FR.md). Workflow : Java 17, Gradle 8.14.3, AGP 8.10.1, SDK 36 au point H0 ; vérifier les fichiers avant de les actualiser. Garder `io.anuke.mindustry.industrial.m3` et la clé de signature précédente ; ne jamais régénérer une clé manquante ni proposer une désinstallation comme solution de mise à jour.
 
-Le workflow actuel se déclenche sur un push vers `industrial-android`, un lancement manuel ou un appel réutilisable. **Il n’a pas de déclencheur PR. Le lancement manuel choisit `industrial-android`, même lancé depuis une autre branche.** Ne pas présenter l’APK stable comme validation d’un SHA de PR. Si une future mission exige un APK avant fusion, prévoir un déclenchement contrôlé du SHA concerné dans son périmètre ; ne pas pousser sur stable uniquement pour provoquer une compilation.
+Le workflow se déclenche sur `industrial-android`, la branche de validation M7C, ou par lancement manuel/réutilisable. Le dispatch demande maintenant `build_ref` : utiliser le **SHA complet testé** pour une PR. Un push de la branche M7C construit `github.sha`. Vérifier le SHA dans `build-evidence/versions.txt` et `dist/BUILD-INFO.txt` ; ne jamais présenter un APK stable comme validation d’une PR. Aucun push/fusion sur stable pour provoquer un build. M7C.1 conserve l’identité/signature M7C et utilise versionCode 11 (M7C : 10). Les régressions hors écran sont dans `IndustrialTransportTests` ; voir le [rapport M7C.1](../../MISSION_7C1_VALIDATION.md).
 
 Ne compiler un APK que si le changement le justifie ou si la mission le demande. Séparer build réussi, tests automatisés, contrôles graphiques cloud et essai réel sur S25. En cas de modification UI, vérifier portrait et tactile ; pour la compatibilité, installer par-dessus avec la même signature, sans effacement. Inclure SHA construit, lien et limites dans le rapport.
 

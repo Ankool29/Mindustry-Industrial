@@ -75,7 +75,8 @@ public final class IndustrialDiagnostics{
         public Sector sector, destination;
         public Evidence evidence;
         public boolean active, paused, legacy, platformsKnown;
-        public int capacity;
+        public int capacity, dispatchable;
+        public String transports;
         public long sampleNanos;
         public final Seq<Material> materials = new Seq<>();
         public final Seq<Platform> platforms = new Seq<>();
@@ -117,6 +118,7 @@ public final class IndustrialDiagnostics{
             colony.active = sector.isBeingPlayed();colony.paused = colony.active && state.isPaused();
             colony.evidence = colony.active ? Evidence.activeObservation : Evidence.nativeEstimate;
             colony.sampleNanos = lastSample(sector);colony.legacy = planet.campaignRules.legacyLaunchPads;
+            colony.transports = IndustrialTransports.describe(sector);
             colony.capacity = colony.active && state.rules.defaultTeam.core() != null ? state.rules.defaultTeam.core().storageCapacity : sector.info.storageCapacity;
             ItemSeq stock = sector.items();float[] incoming = offers.get(sector);
             for(Item item : content.items()){
@@ -139,6 +141,7 @@ public final class IndustrialDiagnostics{
                         pad.items.each((item, amount) -> p.cargo.add(new ItemStack(item, amount)));
                         p.nominalPerMinute = type.launchTime > 0f ? type.itemCapacity * 3600f / type.launchTime : 0f;
                         p.charge = type.launchTime > 0 ? pad.launchCounter / type.launchTime : 0f;
+                        if(p.enabled && p.charge >= 1f && p.buffered == p.capacity && colony.destination != null && colony.destination != sector && colony.destination.planet == planet && colony.destination.hasBase()) colony.dispatchable += p.buffered;
                         for(var consumer : type.consumers) if(consumer instanceof ConsumeLiquid liquid){
                             p.liquidType = liquid.liquid;p.liquid = pad.liquids.get(liquid.liquid);p.liquidPerSecond = liquid.amount * 60f;
                         }

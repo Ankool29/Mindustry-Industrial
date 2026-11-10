@@ -7,11 +7,12 @@
 | Implémenté | M6C : progression indépendante ; M6D : colonisation économique. |
 | Réalisé | M7A : audit. |
 | Implémenté | M7B : diagnostic économique en lecture seule. Aucun transport conservatif nouveau. |
-| En revue | H0 : harnais documentaire ; attendre la validation de sa PR. |
-| Prévu, non autorisé par H0 | M7C : fiabilisation des transports intersectoriels, stocks finis et reprise idempotente à spécifier. |
+| Fusionné | H0 : harnais documentaire, base `c207f5bbb`. |
+| Autorisé, en validation | M7C : manifestes finis, tampons natifs, journal et reprise par marqueurs ; [rapport](../../MISSION_7C_VALIDATION.md). |
+| Autorisé, en validation | M7C.1 : diagnostic du tampon virtuel et achèvement des arrivées finies appariées ; [rapport](../../MISSION_7C1_VALIDATION.md). |
 | Orientation validée, mission à définir | Production agrégée tenant compte des consommations réelles, après validation du transport. |
 
-**Arrêt après H0. Ne pas commencer M7C sans nouvelle validation explicite de l’utilisateur.** Un ordre de feuille de route ne vaut pas autorisation.
+**Arrêt après M7C.1, sans fusion automatique ; attendre les essais S25 et la validation explicite avant M7D.** Un ordre de feuille de route ne vaut pas autorisation.
 
 ## Idées exploratoires — ni engagements ni autorisations
 

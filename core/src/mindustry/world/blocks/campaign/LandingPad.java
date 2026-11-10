@@ -142,6 +142,7 @@ public class LandingPad extends Block{
         public float arrivingTimer = 0f;
         public @Nullable Item arriving;
         public float liquidRemoved;
+        public @Nullable String transportId;
 
         public void handleLanding(){
             if(config == null) return;
@@ -163,6 +164,7 @@ public class LandingPad extends Block{
         }
 
         public void updateTimers(){
+            if(state.isCampaign() && IndustrialTransports.enabled(state.getPlanet())) return;
             if(state.isCampaign() && lastUpdateId != state.updateId){
                 lastUpdateId = state.updateId;
 
@@ -272,6 +274,8 @@ public class LandingPad extends Block{
         @Override
         public void updateTile(){
             updateTimers();
+            boolean conservative = state.isCampaign() && IndustrialTransports.enabled(state.getPlanet()) && !isFake();
+            if(conservative && arriving != null && !IndustrialTransports.canArrive(this)) return;
 
             if(arriving != null){
                 if(!headless){ //pod particles
@@ -308,6 +312,7 @@ public class LandingPad extends Block{
                     landEffect.at(this);
                     Effect.shake(3f, 3f, this);
 
+                    if(conservative && !IndustrialTransports.credit(this)) return;
                     items.set(arriving, itemCapacity);
                     if(!isFake()){
                         //receiving items counts as "production" for now
@@ -329,7 +334,9 @@ public class LandingPad extends Block{
                 cooldown = Mathf.clamp(cooldown);
             }
 
-            if(config != null && (isFake() || (state.isCampaign() && !state.getPlanet().campaignRules.legacyLaunchPads))){
+            if(conservative){
+                IndustrialTransports.receive(this);
+            }else if(config != null && (isFake() || (state.isCampaign() && !state.getPlanet().campaignRules.legacyLaunchPads))){
 
                 if(cooldown <= 0f && efficiency > 0f && items.total() == 0 && (isFake() || (state.rules.sector.info.getImportRate(state.getPlanet(), config) > 0f && state.rules.sector.info.importCooldownTimers.get(config, 0f) >= 1f))){
 
@@ -379,6 +386,13 @@ public class LandingPad extends Block{
 
             ItemSelection.buildTable(LandingPad.this, table, content.items(), () -> config, this::configure, selectionRows, selectionColumns);
 
+            if(state.isCampaign() && IndustrialTransports.enabled(state.getPlanet()) && arriving != null && transportId == null){
+                table.row();
+                table.button("@industrial.transport.discardlegacy", () -> ui.showConfirm("@confirm", "@industrial.transport.discardlegacyconfirm", () -> {
+                    if(arriving != null && transportId == null){arriving = null;arrivingTimer = 0;liquidRemoved = 0;}
+                })).width(240f).height(64f).get().getLabel().setWrap(true);
+            }
+
             if(!net.client() && !isFake()){
                 table.row();
 
@@ -419,6 +433,10 @@ public class LandingPad extends Block{
                 }
 
                 if(config == null) return "";
+                if(IndustrialTransports.enabled(state.getPlanet())){
+                    return arriving != null && transportId == null ? "Réception M7B non vérifiable : suspendue, aucun objet créé." :
+                        "Réception de lots réels uniquement. Moyennes natives non utilisées. Voir le diagnostic planétaire.";
+                }
 
                 int sources = 0;
                 float perSecond = 0f;
@@ -451,7 +469,7 @@ public class LandingPad extends Block{
 
         @Override
         public byte version(){
-            return 1;
+            return 2;
         }
 
         @Override
@@ -466,6 +484,8 @@ public class LandingPad extends Block{
                 arrivingTimer = read.f();
                 liquidRemoved = read.f();
             }
+            transportId = revision >= 2 ? read.str() : null;
+            if(transportId != null && transportId.isEmpty()) transportId = null;
         }
 
         @Override
@@ -478,6 +498,7 @@ public class LandingPad extends Block{
             TypeIO.writeItem(write, arriving);
             write.f(arrivingTimer);
             write.f(liquidRemoved);
+            write.str(transportId == null ? "" : transportId);
         }
     }
 }

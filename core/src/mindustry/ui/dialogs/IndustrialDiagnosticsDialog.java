@@ -110,6 +110,8 @@ public class IndustrialDiagnosticsDialog extends BaseDialog{
     private void colony(Table body, Colony c){
         line(body, f("destination", destination(c)));
         line(body, f("capacity", c.capacity));
+        line(body, c.active ? "Stock réellement expédiable dans les rampes chargées : " + c.dispatchable : "Stock expédiable hors écran : aucun nouveau lot ; seuls les manifestes déjà engagés avancent.");
+        line(body, c.transports);
         line(body, Core.bundle.get("industrial.diagnostics.consumptionlimit"));
         line(body, Core.bundle.get("industrial.diagnostics.ratelegend"));
         for(Material m : c.materials){
@@ -151,7 +153,7 @@ public class IndustrialDiagnosticsDialog extends BaseDialog{
         line(body, p.block.localizedName);
         line(body, f("resource", p.resource == null ? Core.bundle.get("industrial.diagnostics.unassigned") : p.resource.localizedName));
         if(p.launch) line(body, f("destination", destination(c)));
-        else line(body, Core.bundle.get("industrial.diagnostics.sharedoffer"));
+        else line(body, "Réception de manifestes finis uniquement ; les offres moyennes ne sont pas utilisées.");
         line(body, f("nominal", n(p.nominalPerMinute)));
         line(body, Core.bundle.get("industrial.diagnostics.padunmeasured"));
         Material m = p.resource == null ? null : c.material(p.resource);
