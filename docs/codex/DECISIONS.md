@@ -35,3 +35,7 @@ Pour les prochaines étapes : [ROADMAP](ROADMAP.md). Ne modifier une décision q
 ## M7C — autorisation et choix en validation
 
 La mission M7C est explicitement autorisée après fusion de H0. Réutiliser les rampes/réceptions, une destination par secteur, lots physiques finis et journal avec marqueurs de sauvegarde. Attendre un point de sauvegarde pour rendre un débit livrable ; hors écran, seulement des tampons connus et bornés, sans extrapoler des cargaisons. En cas d’ambiguïté, blocage signalé et conservation des fichiers plutôt que crédit supposé. Pas de garantie ACID entre fichiers, ni de correction des recettes estimées M7D. Voir [rapport M7C](../../MISSION_7C_VALIDATION.md) pour les résultats réellement exécutés. PR sans fusion, essais S25 requis ; M7D non autorisée.
+
+## M7C.1 — correctif autorisé, en validation
+
+Une réservation hors écran n’est pas un crédit physique du noyau : le diagnostic les distingue. Corriger l’achèvement des arrivées finies dont l’appariement et l’eau déjà consommée sont attestés par une sauvegarde ; une ancienne liaison inconnue attend une visite, sans stock supposé. Pas de convoyeurs/recettes simulés, ni M7D. Preuves et limites : [M7C.1](../../MISSION_7C1_VALIDATION.md). Arrêt avant fusion, essais S25 requis.

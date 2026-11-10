@@ -45,12 +45,17 @@ public final class IndustrialTransports{
         public Phase phase = Phase.prepared;
         public Seq<Cargo> cargo = new Seq<>();
         public float waterBefore;
+        // Optional v1 extensions: old M7C overlays consumed a full receiver charge.
+        public float waterCost = -1f;
+        public boolean resumedArrival;
         public int total(){int n = 0;for(var c : cargo)n += c.amount;return n;}
     }
     public static class Receiver{
         public int position, amount, capacity;
         public String config, block;
-        public float water, required;
+        // Only a canonical world checkpoint can attest an already started native arrival.
+        public String arrivalId, arrivalItem;
+        public float water, required, paidWater;
         public boolean enabled, busy;
     }
     public static class Checkpoint{
@@ -179,7 +184,11 @@ public final class IndustrialTransports{
                 var r = rules.get(s.destination);verify(checkpoint(s.destination), r);
                 if(s.incoming > 0 && mark(r, inTag) >= s.incoming){
                     checkpoint(s.destination).incoming = Math.max(checkpoint(s.destination).incoming, s.incoming);confirm(s);
-                }else{s.phase = Phase.transit;s.incoming = 0;s.position = -1;}
+                }else{
+                    s.incoming = 0;
+                    if(boundArrival(s) != null){s.phase = Phase.arriving;}
+                    else{s.phase = Phase.transit;s.position = -1;}
+                }
             }
         }
         persist();
@@ -246,7 +255,9 @@ public final class IndustrialTransports{
                     LandingPad type = (LandingPad)pad.block;Receiver r = new Receiver();r.position = pad.pos();r.block = type.name;
                     r.config = pad.config == null ? null : pad.config.name;r.amount = pad.items.total();r.capacity = type.itemCapacity;
                     r.water = pad.liquids.get(type.consumeLiquid);r.required = type.consumeLiquidAmount;r.enabled = pad.enabled;
-                    r.busy = pad.arriving != null;c.receivers.add(r);
+                    r.busy = pad.arriving != null;r.arrivalId = pad.transportId;
+                    r.arrivalItem = pad.arriving == null ? null : pad.arriving.name;
+                    r.paidWater = pad.arriving == null ? 0f : pad.liquidRemoved;c.receivers.add(r);
                 }
             }
             persist();
@@ -264,8 +275,9 @@ public final class IndustrialTransports{
             for(var s : book.pending){
                 if(s.destination != sector.id || s.phase != Phase.overlay || s.incoming <= loadedIncoming) continue;
                 var r = c.receivers.find(p -> p.position == s.position);var build = world.build(s.position);
-                if(r == null || !(build instanceof LandingPadBuild pad) || !pad.block.name.equals(r.block) || pad.config == null ||
-                    !pad.config.name.equals(r.config) || pad.items.total() != 0 || pad.arriving != null ||
+                if(r == null || !(build instanceof LandingPadBuild pad) || !pad.block.name.equals(r.block) ||
+                    !Objects.equals(pad.config == null ? null : pad.config.name, r.config) || pad.items.total() != 0 ||
+                    (s.resumedArrival ? !matchesSavedArrival(s, r, pad) : pad.arriving != null) ||
                     Math.abs(pad.liquids.get(((LandingPad)pad.block).consumeLiquid) - s.waterBefore) > 0.01f)
                     throw new TransportException("tampon de réception hors écran modifié, secteur " + sector.id);
             }
@@ -273,7 +285,9 @@ public final class IndustrialTransports{
                 if(s.destination != sector.id || s.phase != Phase.overlay || s.incoming <= loadedIncoming) continue;
                 LandingPadBuild pad = (LandingPadBuild)world.build(s.position);LandingPad type = (LandingPad)pad.block;
                 for(var cargo : s.cargo)pad.items.add(content.item(cargo.item), cargo.amount);
-                pad.liquids.remove(type.consumeLiquid, type.consumeLiquidAmount);pad.cooldown = 1f;
+                pad.liquids.remove(type.consumeLiquid, s.waterCost < 0f ? type.consumeLiquidAmount : s.waterCost);
+                if(s.resumedArrival){pad.arriving = null;pad.arrivingTimer = 0f;pad.liquidRemoved = 0f;pad.transportId = null;}
+                pad.cooldown = 1f;
                 mark(inTag, Math.max(mark(state.rules, inTag), s.incoming));
             }
             // A saved landing animation can outlive a journal replay; a finite transit manifest is still required.
@@ -311,6 +325,23 @@ public final class IndustrialTransports{
             mark(inTag, s.incoming);pad.transportId = null;return true;
         }catch(TransportException e){return false;}
     }
+    /** A journal claim alone is not proof that the arrival was written into the receiver's world. */
+    private static Receiver boundArrival(Shipment s){
+        var c = book.checkpoints.find(w -> w.sector == s.destination);
+        if(c == null) return null;
+        return c.receivers.find(r -> r.position == s.position && r.busy && s.id.equals(r.arrivalId) &&
+            r.arrivalItem != null && matches(s, content.item(r.arrivalItem), r.capacity) &&
+            Float.isFinite(r.paidWater) && r.paidWater >= 0f && r.paidWater <= r.required + 0.01f);
+    }
+    private static boolean matchesSavedArrival(Shipment s, Receiver r, LandingPadBuild pad){
+        return s.id.equals(pad.transportId) && pad.arriving != null && pad.arriving.name.equals(r.arrivalItem) &&
+            Math.abs(pad.liquidRemoved - r.paidWater) <= 0.01f;
+    }
+    private static void reserve(Shipment s, Receiver r, boolean resumed){
+        s.phase = Phase.overlay;s.position = r.position;s.incoming = book.next++;s.waterBefore = r.water;
+        s.resumedArrival = resumed;s.waterCost = Math.max(0f, r.required - (resumed ? r.paidWater : 0f));
+        r.amount = r.capacity;r.water -= s.waterCost;r.busy = true;
+    }
     /** At most one reserved lot per known empty receiver. No offscreen conveyor, recipe, fuel or core extrapolation. */
     public static void turn(Planet planet){
         if(!enabled(planet) || net.client()) return;
@@ -328,11 +359,17 @@ public final class IndustrialTransports{
                 Sector destination = sector(c.sector);
                 if(destination.isBeingPlayed() || !destination.hasBase()) continue;
                 for(var r : c.receivers){
-                    if(!r.enabled || r.busy || r.config == null || r.amount != 0 || r.water < r.required) continue;
-                    var s = book.pending.find(t -> t.phase == Phase.transit && t.destination == c.sector && matches(t, content.item(r.config), r.capacity));
-                    if(s == null) continue;
-                    s.phase = Phase.overlay;s.position = r.position;s.incoming = book.next++;s.waterBefore = r.water;
-                    r.amount = r.capacity;r.water -= r.required;r.busy = true;changed = true;
+                    if(!r.enabled || r.amount != 0) continue;
+                    if(r.busy){
+                        var s = book.pending.find(t -> t.phase == Phase.arriving && t.destination == c.sector && boundArrival(t) == r);
+                        if(s == null || r.water < Math.max(0f, r.required - r.paidWater)) continue;
+                        reserve(s, r, true);changed = true;
+                    }else{
+                        if(r.config == null || r.water < r.required) continue;
+                        var s = book.pending.find(t -> t.phase == Phase.transit && t.destination == c.sector && matches(t, content.item(r.config), r.capacity));
+                        if(s == null) continue;
+                        reserve(s, r, false);changed = true;
+                    }
                 }
             }
             if(changed) persist();
@@ -351,16 +388,39 @@ public final class IndustrialTransports{
             case overlay -> "tampon réservé hors écran, à confirmer";
         };
     }
+    private static String waiting(Shipment s){
+        Sector destination = sector(s.destination);
+        if(!destination.hasBase()) return "destination sans base";
+        if(destination.isBeingPlayed()) return "réception active : vérifier configuration, eau et sortie";
+        var c = book.checkpoints.find(w -> w.sector == s.destination);
+        if(c == null) return "destination non relevée depuis M7C : visiter et sauvegarder une fois";
+        if(c.receivers.isEmpty()) return "aucune réception enregistrée à destination";
+        if(s.phase == Phase.arriving){
+            var r = boundArrival(s);
+            if(r == null) return "ancienne arrivée non appariée : visiter et sauvegarder pour relever son état";
+            if(!r.enabled) return "réception désactivée";
+            return r.water < Math.max(0f, r.required - r.paidWater) ? "eau insuffisante pour terminer l'arrivée" : "fin au prochain tour économique";
+        }
+        var pads = c.receivers.select(r -> r.config != null && matches(s, content.item(r.config), r.capacity));
+        if(pads.isEmpty()) return "aucune réception configurée pour cette matière";
+        if(!pads.contains(r -> r.enabled)) return "réceptions désactivées";
+        if(!pads.contains(r -> r.enabled && r.amount == 0)) return "tampons occupés";
+        if(!pads.contains(r -> r.enabled && r.amount == 0 && !r.busy)) return "arrivée déjà engagée ou ancien relevé : visiter si nécessaire";
+        if(!pads.contains(r -> r.enabled && r.amount == 0 && !r.busy && r.water >= r.required)) return "eau insuffisante";
+        return "prochain tour économique (120 secondes de jeu, hors pause)";
+    }
     /** Detached diagnostics. Reading does not initialize, recover, write or refresh the engine. */
     public static String describe(Sector sector){
         if(!enabled(sector.planet)) return "";
         if(session != Core.settings || book == null) return "Transports conservatifs : journal pas encore ouvert.";
         if(failure != null) return failure;
-        long pending = 0, transit = 0, receiving = 0;int lots = 0;
+        long pending = 0, transit = 0, receiving = 0, virtual = 0, arriving = 0;int lots = 0;
         for(var s : book.pending){
             if(s.source != sector.id && s.destination != sector.id) continue;
             lots++;if(s.phase == Phase.prepared) pending += s.total();
-            else if(s.phase == Phase.credit || applied(s)) receiving += s.total();else transit += s.total();
+            else if(s.phase == Phase.credit || applied(s)) receiving += s.total();
+            else if(s.phase == Phase.overlay) virtual += s.total();
+            else if(s.phase == Phase.arriving) arriving += s.total();else transit += s.total();
         }
         Totals totals = book.totals.find(t -> t.sector == sector.id);
         StringBuilder detail = new StringBuilder();int shown = 0;
@@ -369,10 +429,11 @@ public final class IndustrialTransports{
             if(shown++ >= 12){detail.append("\nAutres lots : consulter leur secteur source/destination.");break;}
             detail.append("\n#").append(s.sequence).append(" · ").append(s.source).append(" → ").append(s.destination).append(" · ").append(phaseName(s));
             for(var cargo : s.cargo)detail.append(" · ").append(cargo.item).append(" : ").append(cargo.amount);
+            if(s.phase == Phase.transit || s.phase == Phase.arriving) detail.append("\n").append(waiting(s));
         }
         return "Mouvements enregistrés (objets, pas débits moyens)\nExpédiés confirmés : " + (totals == null ? 0 : totals.sent) +
-            "\nReçus confirmés : " + (totals == null ? 0 : totals.received) + "\nDébit en attente de sauvegarde : " + pending +
-            "\nEn transit / attente de tampon : " + transit + "\nCrédit en attente de sauvegarde : " + receiving + "\nLots non soldés : " + lots +
-            "\nHors écran : tampons connus seulement, sans convoyeurs ni recettes. Journal plafonné à 512 lots ; les rampes attendent ensuite." + detail;
+            "\nReçus confirmés : " + (totals == null ? 0 : totals.received) + " (monde destinataire sauvegardé)" + "\nDébit en attente de sauvegarde : " + pending +
+            "\nEn transit / attente de tampon : " + transit + "\nRéservés hors écran : " + virtual + "\nAtterrissages en cours : " + arriving + "\nCrédit en attente de sauvegarde : " + receiving + "\nLots non soldés : " + lots +
+            "\nHors écran : lots réservés dans les tampons connus, appliqués au chargement du monde ; aucun crédit de noyau avant visite. Un tour = 120 secondes de jeu ; carte et diagnostic mettent en pause en solo. Sans convoyeurs ni recettes hors écran. Journal plafonné à 512 lots ; les rampes attendent ensuite." + detail;
     }
 }

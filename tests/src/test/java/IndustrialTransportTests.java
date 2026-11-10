@@ -124,5 +124,83 @@ class IndustrialTransportTests{
         send();directory.child("saves/industrial-transports-v1.bin").delete();settings();
         assertThrows(TransportException.class,()->source.save.load(world.makeSectorContext(source)));assertTrue(source.save.file.exists());
     }
+    @Test void nativeEconomicClockReservesABWhilePlayerStaysInCWithoutLoadingB() throws Exception{
+        ready();byte[] untouched=target.save.file.readBytes();send();arena(third);
+        Universe previous=universe;universe=new Universe();
+        try{
+            for(int i=0;i<7199;i++){Time.update();universe.update();}
+            assertEquals(Phase.transit,book().pending.first().phase);
+            Time.update();universe.update();
+            assertEquals(Phase.overlay,book().pending.first().phase);assertEquals(100,book().pending.first().total());
+            assertSame(third,state.getSector());assertEquals(0,target.info.items.get(Items.copper));assertArrayEquals(untouched,target.save.file.readBytes());
+            Log.info("M7C1_REPRO A->B from C: overlay=100, B core=0, B world unchanged, active=C");
+        }finally{universe=previous;}
+    }
+    @Test void savedPartiallyArrivedFiniteManifestCompletesVirtuallyWhileBIsUnloaded() throws Exception{
+        arena(third);save();ready();send();load(target);begin();for(int i=0;i<20;i++)receiver().updateTile();
+        float alreadyPaid=receiver().liquidRemoved;assertTrue(alreadyPaid>0);save();byte[] untouched=target.save.file.readBytes();
+        load(third);assertEquals(Phase.arriving,book().pending.first().phase);universe.runTurn();
+        assertEquals(Phase.overlay,book().pending.first().phase,"Known finite arrival must not stay arriving forever offscreen");
+        assertSame(third,state.getSector());assertArrayEquals(untouched,target.save.file.readBytes());
+        load(target);assertEquals(100,receiver().items.total());assertEquals(1500,receiver().liquids.get(Liquids.water),.02f);
+        assertNull(receiver().arriving);assertNull(receiver().transportId);save();settings();load(target);assertEquals(100,receiver().items.total());
+    }
+    void writeBook(Book value) throws Exception{
+        writeBookJson(JsonIO.write(value));
+    }
+    void writeBookJson(String json) throws Exception{
+        byte[] bytes=json.getBytes(java.nio.charset.StandardCharsets.UTF_8);var crc=new java.util.zip.CRC32();crc.update(bytes);
+        try(var out=new DataOutputStream(directory.child("saves/industrial-transports-v1.bin").write(false))){out.writeInt(0x49544331);out.writeInt(bytes.length);out.writeLong(crc.getValue());out.write(bytes);}
+    }
+    void legacyM7CJournal() throws Exception{
+        var root=new arc.util.serialization.JsonReader().parse(JsonIO.write(book()));
+        for(var s=root.get("pending").child;s!=null;s=s.next){s.remove("waterCost");s.remove("resumedArrival");}
+        for(var c=root.get("checkpoints").child;c!=null;c=c.next){
+            var receivers=c.get("receivers");if(receivers==null)continue;
+            for(var r=receivers.child;r!=null;r=r.next){r.remove("arrivalId");r.remove("arrivalItem");r.remove("paidWater");}
+        }
+        writeBookJson(root.toJson(arc.util.serialization.JsonWriter.OutputType.json));
+    }
+    @Test void virtualBufferIsVisibleAndReadOnlyBeforeAnyReturnToB() throws Exception{
+        ready();send();arena(third);universe.runTurn();byte[] untouched=target.save.file.readBytes();byte[] journal=directory.child("saves/industrial-transports-v1.bin").readBytes();
+        for(int i=0;i<5;i++){
+            String summary=IndustrialTransports.describe(target);assertTrue(summary.contains("Réservés hors écran : 100"));assertTrue(summary.contains("En transit / attente de tampon : 0"));assertTrue(summary.contains("Reçus confirmés : 0"));IndustrialDiagnostics.read(strict);
+        }
+        var r=book().checkpoints.find(c->c.sector==target.id).receivers.first();assertEquals(100,r.amount);assertEquals(1500,r.water,.01f);
+        assertEquals(0,target.info.items.get(Items.copper));assertArrayEquals(untouched,target.save.file.readBytes());assertArrayEquals(journal,directory.child("saves/industrial-transports-v1.bin").readBytes());assertSame(third,state.getSector());
+    }
+    @Test void migratedDestinationWithoutM7CCheckpointWaitsWithExplicitReason() throws Exception{
+        ready();var b=book();b.checkpoints.removeAll(c->c.sector==target.id);writeBook(b);settings();byte[] untouched=target.save.file.readBytes();
+        send();arena(third);for(int i=0;i<3;i++)universe.runTurn();assertEquals(Phase.transit,book().pending.first().phase);assertTrue(IndustrialTransports.describe(target).contains("destination non relevée depuis M7C"));assertArrayEquals(untouched,target.save.file.readBytes());assertEquals(100,book().pending.first().total());
+    }
+    @Test void knownArrivalSurvivesRestartInCAndUsesRemainingWaterExactlyOnce() throws Exception{
+        arena(third);save();ready();send();load(target);begin();for(int i=0;i<20;i++)receiver().updateTile();save();String id=book().pending.first().id;load(third);settings();load(third);
+        assertEquals(Phase.arriving,book().pending.first().phase);universe.runTurn();assertEquals(Phase.overlay,book().pending.first().phase);assertEquals(id,book().pending.first().id);assertEquals(1300,book().pending.first().waterCost,.01f);
+        for(int i=0;i<5;i++)universe.runTurn();settings();load(third);universe.runTurn();assertEquals(1,book().pending.size);assertSame(third,state.getSector());
+        load(target);assertEquals(100,receiver().items.total());assertEquals(1500,receiver().liquids.get(Liquids.water),.02f);save();settings();load(target);assertEquals(100,receiver().items.total());assertTrue(book().pending.isEmpty());
+    }
+    @Test void legacyM7CNormalOverlayStillAppliesWithoutNewFields() throws Exception{
+        ready();send();arena(third);universe.runTurn();String id=book().pending.first().id;legacyM7CJournal();settings();load(target);
+        assertEquals(100,receiver().items.total());assertEquals(1500,receiver().liquids.get(Liquids.water),.01f);assertEquals(id,book().pending.first().id);save();assertTrue(book().pending.isEmpty());
+    }
+    @Test void legacyM7CArrivalRequiresOneFreshCheckpointBeforeOfflineResume() throws Exception{
+        arena(third);save();ready();send();load(target);begin();for(int i=0;i<20;i++)receiver().updateTile();save();legacyM7CJournal();settings();load(third);
+        universe.runTurn();assertEquals(Phase.transit,book().pending.first().phase);assertTrue(IndustrialTransports.describe(target).contains("ancien relevé"));
+        load(target);save();load(third);universe.runTurn();assertEquals(Phase.overlay,book().pending.first().phase);load(target);assertEquals(100,receiver().items.total());assertEquals(1500,receiver().liquids.get(Liquids.water),.02f);save();assertTrue(book().pending.isEmpty());
+    }
+    @Test void insufficientRemainingWaterBlocksOfflineArrivalWithoutInventingSupply() throws Exception{
+        arena(third);save();ready();send();load(target);begin();for(int i=0;i<20;i++)receiver().updateTile();receiver().liquids.set(Liquids.water,100);save();byte[] untouched=target.save.file.readBytes();load(third);universe.runTurn();
+        assertEquals(Phase.arriving,book().pending.first().phase);assertEquals(100,book().pending.first().total());assertTrue(IndustrialTransports.describe(target).contains("eau insuffisante pour terminer"));assertArrayEquals(untouched,target.save.file.readBytes());
+    }
+    @Test void changedSavedArrivalBindingIsQuarantinedBeforeCreditingAnyCargo() throws Exception{
+        arena(third);save();ready();send();load(target);begin();receiver().updateTile();save();load(third);universe.runTurn();
+        SaveIO.load(new java.util.zip.InflaterInputStream(target.save.file.read()),world.makeSectorContext(target));receiver().transportId="unrelated";SaveIO.write(target.save.file);settings();assertThrows(TransportException.class,()->load(target));assertTrue(target.save.file.exists());assertEquals(0,receiver().items.total());
+    }
+    @Test void twoSavedArrivalsReserveDistinctBuffersAndNeverDoubleSpendWater() throws Exception{
+        arena(third);save();ready();world.tile(38,30).setBlock(Blocks.landingPad,Team.sharded);var second=(LandingPadBuild)world.build(38,30);second.config=Items.copper;second.liquids.add(Liquids.water,3000);save();
+        arena(source);for(int x:new int[]{18,25}){var p=ramp(x);p.items.add(Items.copper,100);assertTrue(IndustrialTransports.launch(p));}save();load(target);second=(LandingPadBuild)world.build(38,30);second.efficiency=1;IndustrialTransports.receive(second);begin();
+        for(int i=0;i<20;i++){receiver().updateTile();second.updateTile();}save();load(third);universe.runTurn();assertEquals(2,book().pending.count(s->s.phase==Phase.overlay));
+        load(target);second=(LandingPadBuild)world.build(38,30);assertEquals(200,receiver().items.total()+second.items.total());assertEquals(1500,receiver().liquids.get(Liquids.water),.02f);assertEquals(1500,second.liquids.get(Liquids.water),.02f);save();assertTrue(book().pending.isEmpty());assertEquals(200,book().totals.find(t->t.sector==target.id).received);
+    }
     @Test void diagnosticNeverMutatesJournal() throws Exception{send();Fi f=directory.child("saves/industrial-transports-v1.bin");byte[] old=f.readBytes();for(int i=0;i<20;i++)IndustrialDiagnostics.read(strict);assertArrayEquals(old,f.readBytes());assertEquals(0,world.build(18,18).items.total());}
 }

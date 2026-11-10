@@ -29,3 +29,5 @@ Le journal M6D n’est pas une garantie ACID couvrant paramètres et mondes. Pou
 ## M7C — transport progressif
 
 [IndustrialTransports](../../core/src/mindustry/game/IndustrialTransports.java) branche uniquement les rampes/réceptions de la planète progressive et neutralise leur ancien crédit statistique. Journal fini `saves/industrial-transports-v1.bin`, marqueurs débit/crédit dans `Rules.tags`, points de sauvegarde `SaveIO` ; état agrégé de tampons connus, sans second monde chargé. Ne pas restaurer séparément un secteur et son journal. Les moyennes natives de **production** restent inchangées (M7D). Atomicité, migration et limites : [validation M7C](../../MISSION_7C_VALIDATION.md).
+
+M7C.1 complète les relevés avec l’arrivée finie appariée et son eau déjà consommée, afin de l’achever dans un tampon virtuel au prochain tour ; les champs v1 sont facultatifs. Le diagnostic distingue la réservation hors écran du crédit physique confirmé. Voir [M7C.1](../../MISSION_7C1_VALIDATION.md), sans simulation de convoyeurs/recettes.
