@@ -1,6 +1,6 @@
 # M7C.1 — diagnostic des livraisons hors écran
 
-Statut : correction ciblée en validation, branche `feature/m7c-conservative-transports`, suite de la PR #2. Base : `9713e80cc` ; APK M7C précédent : `05fcd7ab8`. Aucun travail M7D, aucune fusion. Voir le [rapport M7C](MISSION_7C_VALIDATION.md) pour l’architecture et les limites historiques.
+Statut : correction ciblée validée dans le cloud, essais Android physiques attendus, branche `feature/m7c-conservative-transports`, suite de la PR #2. Base : `9713e80cc` ; APK M7C précédent : `05fcd7ab8`. Aucun travail M7D, aucune fusion. Voir le [rapport M7C](MISSION_7C_VALIDATION.md) pour l’architecture et les limites historiques.
 
 ## Conclusion et reproduction
 
@@ -45,7 +45,36 @@ Aucun changement du format des fichiers de monde ou de la révision des bâtimen
 - Workflow Android : type/version M7C.1, versionCode 11 ; identifiant et signature conservés.
 - Documents du harnais concernés et présent rapport ; M7C historique conservé.
 
-Résultats ciblés initiaux : **53 tests réussis, 0 échec, 0 erreur, 0 ignoré** (41 transports + 12 diagnostics). Avant correction : reproduction positive du tampon normal, puis régression `arriving → overlay` en échec comme décrit ci-dessus. Suite locale complète : **438 réussis, 0 échec, 0 erreur, 0 ignoré**, après correction. Contrôle portrait et APK final : à compléter avec les preuves exécutées avant livraison.
+Résultats ciblés initiaux : **53 tests réussis, 0 échec, 0 erreur, 0 ignoré** (41 transports + 12 diagnostics). Avant correction : reproduction positive du tampon normal, puis régression `arriving → overlay` en échec comme décrit ci-dessus. Suite locale complète : **438 réussis, 0 échec, 0 erreur, 0 ignoré**, après correction. Contrôle portrait cloud : client reconstruit depuis ce code, mode mobile **600 × 1000**, source A = 170, B = 171, C = 15. Après préparation/sauvegarde de B puis départ A → B, un tour économique forcé dans cette fixture affiche **« Réservés hors écran : 100 »**, **« En transit : 0 »**, **« Reçus confirmés : 0 »**. C reste chargé ; le fichier B et le journal restent identiques lors de dix actualisations du diagnostic. Défilement uniquement vertical, boutons accessibles et capture inspectée. Trace : `M7C1_UI_PORTRAIT_VIRTUAL_100_FROM_C_NO_B_LOAD_READONLY_OK`. Cette fixture n’est jamais livrée dans l’APK. Ce contrôle est un client desktop en mode mobile, pas un essai physique Android.
+
+Les 41 tests de transport incluent les cas suivants :
+
+| Scénario | Résultat |
+| --- | --- |
+| Horloge native, A → B, C actif | `transit` à 7 199 ticks, `overlay` à 7 200 ; B non chargé/réécrit. |
+| Diagnostic sans retour B | 100 réservés, 0 transit, 0 reçus confirmés ; lectures sans mutation. |
+| Arrivée sauvegardée après 200 d’eau consommés | Achèvement virtuel ; coût restant 1 300 ; après chargement, 100 cuivre et 1 500 eau restants. |
+| Redémarrage dans C, répétition des tours et du journal | Même ID, un seul lot ; après chargement/sauvegarde, pas de deuxième crédit. |
+| Deux arrivées avec ordre de réception différent | Deux tampons distincts, 200 objets au total ; 1 500 d’eau restants dans chacun. |
+| Eau restante insuffisante, tampon occupé ou absent | Conservation du lot, attente ; aucune livraison supposée. |
+| Arrivée sauvegardée dont la liaison a été altérée | Exception de transport avant crédit, fichier conservé. |
+| Forme JSON M7C reconstituée sans les nouveaux champs | Ancien `overlay` appliqué avec coût complet ; ancienne arrivée conservée puis débloquée par une visite/sauvegarde. |
+| Fixture M7B et campagnes classique/libre | Tests existants réussis ; aucune migration destructive ni changement de réception native dans les autres campagnes. |
+
+Les interruptions sont reproduites par rechargement de journaux et fichiers temporaires, pas par coupure électrique sur S25. Le test M7B de production reste **5 graphite réels → 35 estimés hors écran → 35 au retour** : il ne constitue pas une livraison M7C.1. L’ancienne duplication statistique des réceptions reste bloquée dans la progressive.
+
+**CI finale : 438 réussis, 0 échec, 0 erreur, 0 ignoré, 16 suites JUnit**, au commit `32ba1e1210c873a47d45009bfe7c24591f7dcc1f`. Les comptes ont été recalculés depuis tous les XML de l’[artefact JUnit](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42765979342/artifacts/13739920886) ; 41 tests de transport, 12 diagnostics, 385 autres. Aucun cumul avec les exécutions locales. Les [journaux de compilation et de tests](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42765979342/artifacts/13739891112) et le [workflow final réussi](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42765979342) sont les preuves de livraison.
+
+Mesures de la CI finale (Java 17, Ubuntu 22.04, **pas S25**) : après chauffe, moyenne de 1 000 appels du service inactif ; le JIT explique les variations non monotones. Il ne s’agit pas de FPS ni d’une mesure de toute la simulation.
+
+| Colonies synthétiques | Temps moyen / appel | Allocations / appel | Journal |
+| --- | ---: | ---: | ---: |
+| 5 | 2,21 µs | 120 octets | 990 octets |
+| 20 | 2,33 µs | 459 octets | 3 421 octets |
+| 50 | 0,86 µs | 1 176 octets | 8 641 octets |
+| 100 | 1,02 µs | 2 376 octets | 17 341 octets |
+
+File pleine : 512 admissions durables, **0,79 ms/admission** en moyenne, journal **68 080 octets** ; le lot supplémentaire reste dans la rampe. Ces bancs mesurent principalement des réceptions au repos et le journal de départ, pas un réseau massif d’arrivées simultanées. Les allocations ne sont pas la mémoire résidente ; l’identité ajoute 36 octets. Les écritures restent synchrones et les latences physiques Android restent à tester. Aucun nouvel historique permanent ni traitement à chaque image.
 
 ## Limites conservées
 
@@ -58,7 +87,11 @@ Résultats ciblés initiaux : **53 tests réussis, 0 échec, 0 erreur, 0 ignoré
 
 ## APK et protocole S25
 
-À compléter : SHA du code réellement construit, workflow, lien d’artefact, SHA-256 de l’APK et vérifications de signature/version. APK attendu : `Mindustry-Industrial-v160.7-m7c1.apk`, versionCode **11**, identifiant `io.anuke.mindustry.industrial.m3`, certificat M7C inchangé.
+- [Télécharger l’artefact APK M7C.1](https://github.com/Ankool29/Mindustry-Industrial/actions/runs/42765979342/artifacts/13739024415) ; extraire **`Mindustry-Industrial-v160.7-m7c1.apk`** du ZIP. Connexion GitHub éventuellement requise, rétention annoncée jusqu’au **10 décembre 2026**.
+- Code compilé : **`32ba1e1210c873a47d45009bfe7c24591f7dcc1f`**, concordant dans le workflow, `BUILD-INFO.txt`, `versions.txt` et l’en-tête Git de l’archive des sources correspondantes. Le commit documentaire final n’altère pas ce code.
+- SHA-256 de l’APK téléchargé et recalculé : **`e824134049dcdbfc7369a329a8f8f2283b6b87e7c4aa1e5b3f01b4b84efe911a`**, conforme à `SHA256SUMS.txt`. Digest du ZIP d’artefact vérifié séparément : `2ab2703eba537cbc601c3ddb0e28d1af79ae2d3d8ddfd5f7da2176c27e42ef02`.
+- `aapt` confirme **`8-industrial-m7c1-160.7`**, **versionCode 11**, **`io.anuke.mindustry.industrial.m3`**, minSdk déclaré 21, targetSdk 36. ARM64 présent ; contrôle `zipalign -c -P 16 4` réussi.
+- `apksigner verify --verbose --print-certs` sur le binaire reçu : signature valide v1/v2, certificat SHA-256 **`61254fd2280bf34aa64bd06405cf0e2bc9b2d8fe7df4cc615c39983bcdfd8086`**, identique à M7C (versionCode 10) et M7B (9). Aucun remplacement de clé, aucune désinstallation demandée. L’installation effective de cette version sur S25 n’a pas été réalisée par Codex.
 
 1. Exporter toutes les données avant essai ; installer par-dessus M7C, sans désinstallation/effacement.
 2. Pour une destination ancienne, visiter B, configurer une réception cuivre avec eau et sortie, puis quitter en sauvegardant. Charger A, expédier un lot fini, puis rester dans C.
@@ -67,4 +100,8 @@ Résultats ciblés initiaux : **53 tests réussis, 0 échec, 0 erreur, 0 ignoré
 5. Visiter B : un seul lot physique, consommation totale d’eau correcte, puis confirmation après sauvegarde. Tester saturation et eau insuffisante : le lot doit rester conservé avec motif explicite.
 6. Signaler l’état du journal/diagnostic si une attente persiste. Ne pas restaurer séparément un secteur ou journal ni supprimer de fichiers. Vérifier séparément classique et libre.
 
-Arrêt après M7C.1, PR non fusionnée, essais S25 et validation utilisateur attendus. M7D non commencée.
+## Verdict
+
+**Prête pour les essais Android de M7C.1, pas de fusion automatique.** Le blocage d’une arrivée finie sauvegardée est reproduit puis corrigé, avec conservation des quantités et de l’eau dans les cas testés. Le diagnostic ne doit plus faire passer une réservation virtuelle pour une absence totale de progression. En revanche, un noyau ou une usine inactive n’est toujours pas alimenté physiquement avant la visite : ce comportement volontaire ne fait pas partie du correctif.
+
+La [PR #2](https://github.com/Ankool29/Mindustry-Industrial/pull/2) reste non fusionnée. Arrêt après publication de M7C.1 ; essais S25 et validation utilisateur attendus. M7D non commencée.
