@@ -52,6 +52,7 @@ public class SaveIO{
             throw new RuntimeException(e);
         }
         IndustrialTransports.afterSave(file);
+        IndustrialEconomyCapture.saved(file);
     }
 
     public static DataInputStream getStream(Fi file){
@@ -161,6 +162,7 @@ public class SaveIO{
             }
         }
         IndustrialTransports.loaded();
+        IndustrialEconomyCapture.loaded();
     }
 
     /** Loads from a deflated (!) input stream. */
