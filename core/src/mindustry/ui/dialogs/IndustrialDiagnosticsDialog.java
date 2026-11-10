@@ -23,6 +23,7 @@ public class IndustrialDiagnosticsDialog extends BaseDialog{
     private Platform platform;
     private String query = "";
     private Label freshness;
+    private IndustrialGraphDialog graph;
     private long lastClock;
 
     public IndustrialDiagnosticsDialog(Planet planet){
@@ -108,6 +109,11 @@ public class IndustrialDiagnosticsDialog extends BaseDialog{
     }
 
     private void colony(Table body, Colony c){
+        body.button("Graphe économique — capture", () -> {
+            if(graph == null)graph = new IndustrialGraphDialog();
+            graph.show(c.sector);
+        })
+            .name("industrial-graph").minHeight(64).growX().with(b -> b.getLabel().setWrap(true)).row();
         line(body, f("destination", destination(c)));
         line(body, f("capacity", c.capacity));
         line(body, c.active ? "Stock réellement expédiable dans les rampes chargées : " + c.dispatchable : "Stock expédiable hors écran : aucun nouveau lot ; seuls les manifestes déjà engagés avancent.");

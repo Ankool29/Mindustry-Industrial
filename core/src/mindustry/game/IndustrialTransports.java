@@ -409,6 +409,26 @@ public final class IndustrialTransports{
         if(!pads.contains(r -> r.enabled && r.amount == 0 && !r.busy && r.water >= r.required)) return "eau insuffisante";
         return "prochain tour économique (120 secondes de jeu, hors pause)";
     }
+    /** References only: never add these quantities to native world stock totals a second time. */
+    public static class ManifestView{
+        public String id, phase, ownership;
+        public int source, destination;
+        public String[] items;
+        public int[] amounts;
+    }
+    public static Seq<ManifestView> inspectManifests(Sector sector){
+        Seq<ManifestView> result = new Seq<>();
+        if(sector == null || !enabled(sector.planet) || session != Core.settings || book == null || failure != null) return result;
+        for(var s : book.pending){
+            if(s.source != sector.id && s.destination != sector.id) continue;
+            ManifestView v = new ManifestView();v.id = s.id;v.phase = s.phase.name();v.source = s.source;v.destination = s.destination;
+            v.ownership = s.phase == Phase.credit || applied(s) ? "world-receipt" : "transport";
+            v.items = new String[s.cargo.size];v.amounts = new int[s.cargo.size];
+            for(int i = 0; i < s.cargo.size; i++){v.items[i] = s.cargo.get(i).item;v.amounts[i] = s.cargo.get(i).amount;}
+            result.add(v);
+        }
+        return result;
+    }
     /** Detached diagnostics. Reading does not initialize, recover, write or refresh the engine. */
     public static String describe(Sector sector){
         if(!enabled(sector.planet)) return "";

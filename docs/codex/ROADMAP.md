@@ -10,10 +10,11 @@
 | Fusionné | H0 : harnais documentaire, base `c207f5bbb`. |
 | Autorisé, en validation | M7C : manifestes finis, tampons natifs, journal et reprise par marqueurs ; [rapport](../../MISSION_7C_VALIDATION.md). |
 | Autorisé, en validation | M7C.1 : diagnostic du tampon virtuel et achèvement des arrivées finies appariées ; [rapport](../../MISSION_7C1_VALIDATION.md). |
-| Audit autorisé, à valider | M7D-A : [architecture de simulation économique hors écran](../../MISSION_7D_AUDIT.md), aucune implémentation. |
-| Proposition, non autorisée | M7D-B à F : capture, autorité/reprise, prototype cuivre, convoyeurs/recettes et utilités ; voir le découpage de l’audit. |
+| Architecture validée par l’utilisateur | M7D-A : [architecture de simulation économique hors écran](../../MISSION_7D_AUDIT.md), audit de référence, PR #3 non fusionnée. |
+| Autorisé, en validation | M7D-B : capture économique détachée et diagnostic en lecture seule ; [rapport](../../MISSION_7D_B_VALIDATION.md). |
+| Proposition, non autorisée | M7D-C à F : autorité/reprise, prototype cuivre, convoyeurs/recettes et utilités ; voir le découpage de l’audit. |
 
-**Arrêt après M7D-A ; attendre la validation de l’audit avant toute implémentation M7D, sans fusion automatique.** Les retours Android rapportés par l’utilisateur motivent cet audit ; ils ne constituent pas une validation générale de M7C.1. Un ordre de feuille de route ne vaut pas autorisation.
+**Arrêt après M7D-B, sans fusion automatique.** L’architecture de M7D-A est validée ; cela n’autorise aucune simulation autonome dans B. M7C.1 reste le moteur de transport. Attendre les essais Android et la validation explicite avant C. Un ordre de feuille de route ne vaut pas autorisation.
 
 ## Idées exploratoires — ni engagements ni autorisations
 

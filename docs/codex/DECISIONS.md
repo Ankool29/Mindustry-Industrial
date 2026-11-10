@@ -39,3 +39,9 @@ La mission M7C est explicitement autorisée après fusion de H0. Réutiliser les
 ## M7C.1 — correctif autorisé, en validation
 
 Une réservation hors écran n’est pas un crédit physique du noyau : le diagnostic les distingue. Corriger l’achèvement des arrivées finies dont l’appariement et l’eau déjà consommée sont attestés par une sauvegarde ; une ancienne liaison inconnue attend une visite, sans stock supposé. Pas de convoyeurs/recettes simulés, ni M7D. Preuves et limites : [M7C.1](../../MISSION_7C1_VALIDATION.md). Arrêt avant fusion, essais S25 requis.
+
+## M7D-A / B — architecture validée, capture seule autorisée
+
+L’utilisateur valide les graphes compacts par secteur, un futur registre commun avec les transports et une simulation conservative à monde actif unique ([audit A](../../MISSION_7D_AUDIT.md), PR #3). M7D-B livre uniquement la capture et son diagnostic : cache détaché en mémoire de session, aucun nouveau propriétaire des stocks, aucune migration ni écriture de graphe dans les sauvegardes. Ce choix limite les risques de B ; la persistance autoritative et la reprise transactionnelle exigent une mission séparée.
+
+Le périmètre d’éligibilité reste celui du prototype minimal de l’audit : cuivre, chemins simples par adjacence, équipements explicitement reconnus. Les modules d’équipements non supportés sont relevés lorsque lisibles ; leurs états opaques sont signalés, jamais estimés. Notamment, `coreIncinerates` natif reste inchangé et rend un secteur incompatible avec ce prototype sans incinération. Ne pas masquer ce diagnostic en changeant les règles. [Preuves B](../../MISSION_7D_B_VALIDATION.md). Aucune autorisation de M7D-C à F, aucun merge automatique.
